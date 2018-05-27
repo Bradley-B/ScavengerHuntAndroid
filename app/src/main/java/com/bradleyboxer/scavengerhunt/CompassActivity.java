@@ -145,7 +145,7 @@ public class CompassActivity extends AppCompatActivity {
                 0.5f);
         currentAzimuth = azimuth;
 
-        an.setDuration(500);
+        an.setDuration(250);
         an.setRepeatCount(0);
         an.setFillAfter(true);
 

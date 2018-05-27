@@ -1,11 +1,15 @@
 package com.bradleyboxer.scavengerhunt;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,23 +46,23 @@ public class MainActivity extends AppCompatActivity {
         String clue = intent.getStringExtra("clueFound"); //name of the geofence
         if(clue!=null) {
             String textToDisplay;
-            if(clue.contains("1")) { //to display at home
+            if(clue.equals("Clue 1")) { //to display at home
                 textToDisplay = Clues.getClueOne();
-            } else if(clue.contains("1.5")) { //to display at kid street
+            } else if(clue.equals("Clue 1.5")) { //to display at kid street
                 textToDisplay = Clues.getClueOne2();
-            } else if(clue.contains("2")) { //to display at kid street [after compass]
+            } else if(clue.equals("Clue 2")) { //to display at kid street [after compass]
                 textToDisplay = Clues.getClueTwo();
-            } else if(clue.contains("2.5")) { //to display at duke estate
+            } else if(clue.equals("Clue 2.5")) { //to display at duke estate
                 textToDisplay = Clues.getClueTwo2();
-            } else if(clue.contains("3")) { //to display at duke estate [after compass]
+            } else if(clue.equals("Clue 3")) { //to display at duke estate [after compass]
                 textToDisplay = Clues.getClueThree();
-            } else if(clue.contains("3.5")) { //to display at colonial park
+            } else if(clue.equals("Clue 3.5")) { //to display at colonial park
                 textToDisplay = Clues.getClueThree2();
-            } else if(clue.contains("4")) { //to display at colonial park [after compass]
+            } else if(clue.equals("Clue 4")) { //to display at colonial park [after compass]
                 textToDisplay = Clues.getClueFour();
-            } else if(clue.contains("4.5")) { //to display at hawk watch
+            } else if(clue.equals("Clue 4.5")) { //to display at hawk watch
                 textToDisplay = Clues.getClueFour2();
-            } else if(clue.contains("5")) { //to display at hawk watch [after compass]
+            } else if(clue.equals("Clue 5")) { //to display at hawk watch [after compass]
                 textToDisplay = Clues.getClueFive();
             } else {
                 textToDisplay = "Oh shit someone messed up and that someone was me";
@@ -118,24 +122,28 @@ public class MainActivity extends AppCompatActivity {
                     .build());
         }
 
-        try {
-            mGeofencingClient.addGeofences(getGeofencingRequest(mGeofenceList), getGeofencePendingIntent())
-                    .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            // Geofences added
-                            Log.i("GEOFENCE STATUS", "Geofences sucessfully added");
-                        }
-                    })
-                    .addOnFailureListener(this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Failed to add geofences
-                            Log.e("GEOFENCE STATUS", "Geofences not added ERROR");
-                            Log.e("GEOFENCE STATUS", e.getMessage());
-                        }
-                    });
-        } catch (SecurityException e) {e.printStackTrace();}
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        }
+
+        mGeofencingClient.addGeofences(getGeofencingRequest(mGeofenceList), getGeofencePendingIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Geofences added
+                        Log.i("GEOFENCE STATUS", "Geofences sucessfully added");
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Failed to add geofences
+                        Log.e("GEOFENCE STATUS", "Geofences not added ERROR");
+                        Log.e("GEOFENCE STATUS", e.getMessage());
+                    }
+                });
+
 
     }
 
