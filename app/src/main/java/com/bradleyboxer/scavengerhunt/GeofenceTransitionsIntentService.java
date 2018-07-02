@@ -9,9 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
+
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -61,8 +63,9 @@ public class GeofenceTransitionsIntentService extends IntentService {
             String geofenceName = triggeringGeofence.getRequestId();
 
             // Send notification and log the transition details.
-            sendNotification(geofenceName);
-            Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
+            Clue discoveredClue = getTriggeredClue(geofencingEvent);
+            discoveredClue.setDiscovered();
+            sendNotification(discoveredClue);
             Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
         } else {
             // Log the error.
@@ -70,7 +73,31 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
     }
 
-    private void sendNotification(String geofenceName) {
+    private Clue getTriggeredClue(GeofencingEvent event) {
+        List<Geofence> triggeringGeofences = event.getTriggeringGeofences();
+        Location triggeringLocation = event.getTriggeringLocation();
+
+        for(Clue clue : Clues.clues) {
+            boolean name = false;
+            for(Geofence geofence : triggeringGeofences) {
+                name = name || geofence.getRequestId().equals(clue.getGeofenceClue().getName());
+            }
+
+            float[] distanceBetween = new float[1];
+            Location.distanceBetween(triggeringLocation.getLatitude(), triggeringLocation.getLongitude(),
+                    clue.getGeofenceClue().latitude, clue.getGeofenceClue().longitude, distanceBetween);
+
+            boolean location = distanceBetween[0]<=clue.getGeofenceClue().radius;
+            if(name && location) {
+                return clue;
+            }
+        }
+        return new Clue("if you see this message please contact the developer \n" +
+                "and tell them the geofence service has gained sentience and to get their shotgun",
+                new GeofenceData(0, 0, 9001, "something something about errors and machine uprisings"));
+    }
+
+    private void sendNotification(Clue clue) {
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -80,7 +107,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
             CharSequence name = getString(R.string.app_name);
             // Create the channel for the notification
             NotificationChannel mChannel =
-                    new NotificationChannel("geofenceNotif", name, NotificationManager.IMPORTANCE_MAX);
+                    new NotificationChannel("geofenceNotif", name, NotificationManager.IMPORTANCE_HIGH);
 
             // Set the Notification Channel for the Notification Manager.
             mNotificationManager.createNotificationChannel(mChannel);
@@ -89,9 +116,9 @@ public class GeofenceTransitionsIntentService extends IntentService {
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
-        //edit intent with the geofence data
-        notificationIntent.putExtra("clueFound", geofenceName);
-        Log.i("GEOFENCE STATUS", "sending notification for: "+geofenceName);
+        //edit intent with the clue data
+        notificationIntent.putExtra("clue", clue);
+        Log.i("GEOFENCE STATUS", "sending notification for: "+clue.getGeofenceClue().getName());
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -107,18 +134,18 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Get a notification builder that's compatible with platform versions >= 4
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "geofenceNotif");
 
         // Define the notification settings.
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setContentTitle("You've discovered: "+geofenceName)
+                .setContentTitle("You've discovered: "+clue.getGeofenceClue().getName())
                 .setContentText("Click here to read the clue!")
                 .setContentIntent(notificationPendingIntent);
 
-        // Set the Channel ID for Android O.
+        // Set the Channel ID for Android O. //TODO this is now done in the builder constructor... is it necessary?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId("geofenceNotif"); // Channel ID
         }

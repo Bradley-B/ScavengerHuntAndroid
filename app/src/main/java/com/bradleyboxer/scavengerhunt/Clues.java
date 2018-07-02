@@ -1,10 +1,14 @@
 package com.bradleyboxer.scavengerhunt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Bradley on 4/17/2018.
  */
 
 public class Clues {
+    public static List<Clue> clues = new ArrayList<>(); //this is a bad idea, but I don't know what else to do
 
     public static String getClueOne() {
         return "Clue 1 \n\n" + "For the first part \n" +

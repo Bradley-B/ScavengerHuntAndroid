@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CompassActivity extends AppCompatActivity {
-
     private LocationManager lm;
     private static final String TAG = "CompassActivity";
 
@@ -26,8 +25,8 @@ public class CompassActivity extends AppCompatActivity {
     private float currentAzimuth;
     private float targetRadius;
     private int compassTouches = 0;
-    private String geoName = "null";
     private boolean locationLocked = false;
+    private Clue triggeringClue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +36,12 @@ public class CompassActivity extends AppCompatActivity {
         findViewById(R.id.button2).setEnabled(false);
 
         Intent intent = getIntent();
-        double latit = intent.getDoubleExtra("lat", 0);
-        double longit = intent.getDoubleExtra("long", 0);
-        targetRadius = intent.getFloatExtra("radius", 20);
-        geoName = intent.getStringExtra("name");
+        Clue clue = (Clue) intent.getSerializableExtra("clue");
+        double latit = clue.getCompassClue().latitude;
+        double longit = clue.getCompassClue().longitude;
+        targetRadius = clue.getCompassClue().radius;
+        triggeringClue = clue;
+
         setupCompass(latit, longit);
 
         lm = getSystemService(LocationManager.class);
@@ -87,7 +88,8 @@ public class CompassActivity extends AppCompatActivity {
 
     public void displayNextClueOnClick(View v) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("clueFound", geoName);
+        triggeringClue.setSolved();
+        intent.putExtra("clue", triggeringClue);
         startActivity(intent);
     }
 
