@@ -9,6 +9,7 @@ public class Clue implements Serializable {
     private GeofenceData compassClue;
     private boolean discovered;
     private boolean solved;
+    private boolean simpleClue = false;
 
     public Clue(String geofenceText, GeofenceData geofenceClue, String compassText, GeofenceData compassClue) {
         this.geofenceText = geofenceText;
@@ -22,6 +23,7 @@ public class Clue implements Serializable {
         this.geofenceClue = geofenceClue;
         this.compassText = geofenceText;
         this.compassClue = geofenceClue;
+        simpleClue = true;
     }
 
     public GeofenceData getGeofenceClue() {
@@ -54,5 +56,9 @@ public class Clue implements Serializable {
 
     public boolean hasBeenSolved() {
         return solved;
+    }
+
+    public boolean isSimpleClue() {
+        return simpleClue;
     }
 }

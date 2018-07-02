@@ -44,12 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
         if(clue!=null) {
             String textToDisplay;
-            if(clue.hasBeenDiscovered()) { //after geofence
+            if(clue.hasBeenSolved()) { //after compass
                 textToDisplay = clue.getClueSolvedText();
                 findViewById(R.id.button).setVisibility(View.INVISIBLE);
-            } else if(clue.hasBeenSolved()) { //after compass
+            } else if(clue.hasBeenDiscovered()) { //after geofence
                 textToDisplay = clue.getClueDiscoveredText();
-                if(clue.getCompassClue()!=null) {
+                if(!clue.isSimpleClue()) {
                     findViewById(R.id.button).setVisibility(View.VISIBLE);
                 }
             } else {
