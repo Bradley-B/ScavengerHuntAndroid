@@ -77,24 +77,25 @@ public class GeofenceTransitionsIntentService extends IntentService {
         List<Geofence> triggeringGeofences = event.getTriggeringGeofences();
         Location triggeringLocation = event.getTriggeringLocation();
 
-        for(Clue clue : Clues.clues) {
+        for(Clue clue : Clues.clues) { //find the clue in the list equal to
             boolean name = false;
             for(Geofence geofence : triggeringGeofences) {
-                name = name || geofence.getRequestId().equals(clue.getGeofenceClue().getName());
+                name = name || geofence.getRequestId().equals(clue.getGeofenceGeofenceData().getName());
             }
 
             float[] distanceBetween = new float[1];
             Location.distanceBetween(triggeringLocation.getLatitude(), triggeringLocation.getLongitude(),
-                    clue.getGeofenceClue().latitude, clue.getGeofenceClue().longitude, distanceBetween);
+                    clue.getGeofenceGeofenceData().latitude, clue.getGeofenceGeofenceData().longitude, distanceBetween);
 
-            boolean location = distanceBetween[0]<=clue.getGeofenceClue().radius;
+            boolean location = distanceBetween[0]<=clue.getGeofenceGeofenceData().radius;
             if(name && location) {
                 return clue;
             }
         }
         return new Clue("if you see this message please contact the developer \n" +
-                "and tell them the geofence service has gained sentience and to get their shotgun",
-                new GeofenceData(0, 0, 9001, "something something about errors and machine uprisings"));
+                "and tell them the geofence service has gained sentience \n" +
+                "but in the short term reloading the app should fix this",
+                new GeofenceData(0, 0, 9001, "error"));
     }
 
     private void sendNotification(Clue clue) {
@@ -118,7 +119,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
         //edit intent with the clue data
         notificationIntent.putExtra("clue", clue);
-        Log.i("GEOFENCE STATUS", "sending notification for: "+clue.getGeofenceClue().getName());
+        Log.i("GEOFENCE STATUS", "sending notification for: "+clue.getGeofenceGeofenceData().getName());
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -141,7 +142,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setContentTitle("You've discovered: "+clue.getGeofenceClue().getName())
+                .setContentTitle("You've discovered: "+clue.getGeofenceGeofenceData().getName())
                 .setContentText("Click here to read the clue!")
                 .setContentIntent(notificationPendingIntent);
 

@@ -37,9 +37,9 @@ public class CompassActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Clue clue = (Clue) intent.getSerializableExtra("clue");
-        double latit = clue.getCompassClue().latitude;
-        double longit = clue.getCompassClue().longitude;
-        targetRadius = clue.getCompassClue().radius;
+        double latit = clue.getActiveCompassClueSegment().getGeofenceData().latitude;
+        double longit = clue.getActiveCompassClueSegment().getGeofenceData().longitude;
+        targetRadius = clue.getActiveCompassClueSegment().getGeofenceData().radius;
         triggeringClue = clue;
 
         setupCompass(latit, longit);
@@ -88,7 +88,7 @@ public class CompassActivity extends AppCompatActivity {
 
     public void displayNextClueOnClick(View v) {
         Intent intent = new Intent(this, MainActivity.class);
-        triggeringClue.setSolved();
+        triggeringClue.getActiveCompassClueSegment().setSolved();
         intent.putExtra("clue", triggeringClue);
         startActivity(intent);
     }

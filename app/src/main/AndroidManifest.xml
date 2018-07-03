@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <service android:name=".GeofenceTransitionsIntentService" />
 
         <activity android:name=".MainActivity">
@@ -22,7 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CompassActivity"></activity>
+        <activity android:name=".CompassActivity" />
+        <activity android:name=".LauncherActivity" />
+        <activity
+            android:name=".ScavengerHuntCreatorActivity"
+            android:label="@string/title_activity_scavenger_hunt_creator"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

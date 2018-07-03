@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
@@ -43,23 +44,33 @@ public class MainActivity extends AppCompatActivity {
         Clue clue = (Clue) intent.getSerializableExtra("clue");
 
         if(clue!=null) {
-            String textToDisplay;
+            //Clues.updateClueListWith(clue);  TODO
+            // if we do this it means clicking on the notification
+            // will resume the hunt where they left off, and they can't go back
+
+            String textToDisplay = "tell bradley the MainActivity onCreate() clue structure is wrong";
             if(clue.hasBeenSolved()) { //after compass
-                textToDisplay = clue.getClueSolvedText();
-                findViewById(R.id.button).setVisibility(View.INVISIBLE);
+
+                boolean unsolved = clue.containsUnsolvedSegments();
+                textToDisplay = clue.getLastSolvedCompassClueSegment().getClueText();
+
+                if(!unsolved) { //all compass clues in the chain have been solved
+                    findViewById(R.id.button).setVisibility(View.INVISIBLE);
+                } else { //display button to next compass clue
+                    findViewById(R.id.button).setVisibility(View.VISIBLE);
+                }
+
             } else if(clue.hasBeenDiscovered()) { //after geofence
-                textToDisplay = clue.getClueDiscoveredText();
+                textToDisplay = clue.getGeofenceDiscoveredText();
                 if(!clue.isSimpleClue()) {
                     findViewById(R.id.button).setVisibility(View.VISIBLE);
                 }
-            } else {
-                textToDisplay = "tell bradley his beloved clue structure is wrong";
             }
 
             ((TextView) findViewById(R.id.geofenceDisplay)).setText(textToDisplay);
             triggeringClue = clue;
 
-            Log.i("GEOFENCE STATUS", "opened notification for: " + clue.getGeofenceClue().getName());
+            Log.i("GEOFENCE STATUS", "opened notification for: " + clue.getGeofenceGeofenceData().getName());
             Log.i("GEOFENCE STATUS", "displaying text: "+textToDisplay);
             Log.i("button or something", ""+clue.hasBeenDiscovered());
         }
@@ -74,20 +85,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupClues() {
-        Clues.clues.add(new Clue(Clues.getClueOne(), new GeofenceData(40.590889, -74.667181, 200, "A New Journey")));
+//        Clues.clues.add(new Clue(Clues.getClueOne(), new GeofenceData(40.590889, -74.667181, 200, "A New Journey")));
+//
+//        Clues.clues.add(new Clue(Clues.getClueOne2(), new GeofenceData(40.591897, -74.624395, 200, "Kid Street"),
+//                Clues.getClueTwo(), new GeofenceData(40.591363, -74.624316, 15, "Your First Find")));
+//
+//        Clues.clues.add(new Clue(Clues.getClueTwo2(), new GeofenceData(40.544621, -74.624019, 1000, "Duke Estate"),
+//                Clues.getClueThree(), new GeofenceData(40.549693, -74.632098, 10, "Another Letter For You")));
+//
+//        Clues.clues.add(new Clue(Clues.getClueThree2(), new GeofenceData(40.509199, -74.568875, 500, "Colonial Park"),
+//                Clues.getClueFour(), new GeofenceData(40.507904, -74.574650, 20, "Letter Again")));
+//
+//        Clues.clues.add(new Clue(Clues.getClueFour2(), new GeofenceData(40.582799, -74.553179, 500, "Hawk Watch"),
+//                Clues.getClueFive(), new GeofenceData(40.582283, -74.555999, 20, "Surprise")));
 
-        Clues.clues.add(new Clue(Clues.getClueOne2(), new GeofenceData(40.591897, -74.624395, 200, "Kid Street"),
-                Clues.getClueTwo(), new GeofenceData(40.591363, -74.624316, 15, "Your First Find")));
 
-        Clues.clues.add(new Clue(Clues.getClueTwo2(), new GeofenceData(40.544621, -74.624019, 1000, "Duke Estate"),
-                Clues.getClueThree(), new GeofenceData(40.549693, -74.632098, 10, "Another Letter For You")));
+        Clues.clues.add(new Clue(
+                new ClueSegment("geo-kidstreet", new GeofenceData(40.591897, -74.624395, 200, "Kid Street")),
+                new ClueSegment("compass-kidstreet 1", new GeofenceData(40.5918971, -74.6243951, 10, "Kid Street Compass 1")),
+                new ClueSegment("compass-kidstreet 2", new GeofenceData(40.591897, -74.624395, 10, "Kid Street Compass 2"))
+        ));
 
-        Clues.clues.add(new Clue(Clues.getClueThree2(), new GeofenceData(40.509199, -74.568875, 500, "Colonial Park"),
-                Clues.getClueFour(), new GeofenceData(40.507904, -74.574650, 20, "Letter Again")));
-
-        Clues.clues.add(new Clue(Clues.getClueFour2(), new GeofenceData(40.582799, -74.553179, 500, "Hawk Watch"),
-                Clues.getClueFive(), new GeofenceData(40.582283, -74.555999, 20, "Surprise")));
-
+        //Clues.clues.add(new Clue(Clues.getClueOne2(), new GeofenceData(40.591897, -74.624395, 200, "Kid Street"),
+        //        Clues.getClueTwo(), new GeofenceData(40.591363, -74.624316, 15, "Your First Find")));
     }
 
     private void setupGeofence() {
@@ -102,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         geoData = new ArrayList<>();
         for(Clue clue : Clues.clues) {
-            geoData.add(clue.getGeofenceClue());
+            geoData.add(clue.getGeofenceGeofenceData());
         }
 
         mGeofenceList = new ArrayList<>();
@@ -140,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         // Failed to add geofences
                         Log.e("GEOFENCE STATUS", "Geofences not added ERROR");
                         Log.e("GEOFENCE STATUS", e.getMessage());
+                        ((TextView) findViewById(R.id.geofenceDisplay)).setText("Geofence error: "+e.getMessage());
                     }
                 });
 

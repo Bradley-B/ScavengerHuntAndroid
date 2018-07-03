@@ -12,6 +12,8 @@ public class GeofenceData implements Serializable {
     float radius = 0; //meters
     private String name;
 
+    //TODO merge with ClueSegment, as they are really the same thing
+
     public GeofenceData(double latitude, double longitude, float radius, String name) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -21,5 +23,15 @@ public class GeofenceData implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof GeofenceData)) return false;
+        GeofenceData other = (GeofenceData) obj;
+        boolean name = other.getName().equals(this.getName());
+        boolean coord = other.latitude == this.latitude && other.longitude == this.longitude;
+        boolean radius = other.radius == this.radius;
+        return name && coord && radius;
     }
 }
