@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/dividerTop"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="?attr/colorPrimary"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clueNameLabel"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="Name:"
+                android:textAlignment="textEnd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/clueNameView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="68"
+                android:hint="name"
+                android:inputType="text"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clueLatitudeLabel"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="Latitude:"
+                android:textAlignment="textEnd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/clueLatitudeView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="65"
+                android:hint="latitude"
+                android:inputType="numberDecimal"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clueLongitudeLabel"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="Longitude:"
+                android:textAlignment="textEnd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/clueLongitudeView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="60"
+                android:hint="longitude"
+                android:inputType="numberDecimal"
+                android:textColorLink="?attr/colorPrimary"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clueRadiusLabel"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="Radius:"
+                android:textAlignment="textEnd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/clueRadiusView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="45"
+                android:hint="radius (meters)"
+                android:inputType="number"
+                android:textColorLink="?attr/colorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/clueTextLabel"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Clue Text:"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/clueTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="clue message (this displays after the clue segment is discovered)"
+            android:inputType="textMultiLine"
+            android:textAlignment="center" />
+
+        <View
+            android:id="@+id/dividerBottom"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="?attr/colorPrimary"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+
+</merge>

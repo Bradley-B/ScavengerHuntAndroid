@@ -92,10 +92,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 return clue;
             }
         }
-        return new Clue("if you see this message please contact the developer \n" +
-                "and tell them the geofence service has gained sentience \n" +
-                "but in the short term reloading the app should fix this",
-                new GeofenceData(0, 0, 9001, "error"));
+        return new Clue("You have triggered a Scavenger Hunt geofence that does not exist\n" +
+                "in the Scavenger Hunt app. This should not be possible.\n" +
+                "Please reload the app.\n" +
+                "Try force stopping and clearing the app cache if this problem persists.",
+                new GeofenceData(0, 0, 0, "Null"));
     }
 
     private void sendNotification(Clue clue) {
