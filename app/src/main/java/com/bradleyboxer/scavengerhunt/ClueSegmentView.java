@@ -2,19 +2,16 @@ package com.bradleyboxer.scavengerhunt;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
 public class ClueSegmentView extends LinearLayout {
 
-    EditText segmentNameField;
-    EditText segmentLatitudeField;
-    EditText segmentLongitudeField;
-    EditText segmentRadiusField;
-    EditText segmentClueTextField;
+    private EditText segmentNameField;
+    private EditText segmentLatitudeField;
+    private EditText segmentLongitudeField;
+    private EditText segmentRadiusField;
+    private EditText segmentClueTextField;
 
     public ClueSegmentView(Context context, ClueSegment clueSegment) {
         super(context, null, 0);
@@ -51,6 +48,32 @@ public class ClueSegmentView extends LinearLayout {
         segmentLongitudeField = (EditText) findViewById(R.id.clueLongitudeView);
         segmentRadiusField = (EditText) findViewById(R.id.clueRadiusView);
         segmentClueTextField = (EditText) findViewById(R.id.clueTextView);
+
+        segmentNameField.setMaxWidth(segmentNameField.getWidth());
+        segmentLatitudeField.setMaxWidth(segmentLatitudeField.getWidth());
+        segmentLongitudeField.setMaxWidth(segmentLongitudeField.getWidth());
+        segmentRadiusField.setMaxWidth(segmentRadiusField.getWidth());
+
+    }
+
+    public boolean verifyTextFields() {
+        try {
+            Double.parseDouble(segmentLatitudeField.getText().toString());
+            Double.parseDouble(segmentLongitudeField.getText().toString());
+            Float.parseFloat(segmentRadiusField.getText().toString());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public ClueSegment getClueSegment() {
+        String name = segmentNameField.getText().toString();
+        double latitude = Double.parseDouble(segmentLatitudeField.getText().toString());
+        double longitude = Double.parseDouble(segmentLongitudeField.getText().toString());
+        float radius = Float.parseFloat(segmentRadiusField.getText().toString());
+        String clueText = segmentClueTextField.getText().toString();
+        return new ClueSegment(clueText, new GeofenceData(latitude, longitude, radius, name));
     }
 
 }

@@ -2,6 +2,7 @@ package com.bradleyboxer.scavengerhunt;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -17,6 +18,7 @@ public class ClueCreatorActivity extends AppCompatActivity {
 
     LinearLayout scrollableClueSegments;
 
+    ClueSegmentView geofenceSegment;
     List<ClueSegmentView> compassClueSegments;
     List<Button> deleteButtons;
 
@@ -25,6 +27,7 @@ public class ClueCreatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clue_creator);
 
+        geofenceSegment = (ClueSegmentView) findViewById(R.id.geofenceClueSegmentView);
         scrollableClueSegments = (LinearLayout) findViewById(R.id.scrollableClueSegments);
         deleteButtons = new ArrayList<>();
         compassClueSegments = new ArrayList<>();
@@ -79,6 +82,27 @@ public class ClueCreatorActivity extends AppCompatActivity {
                 deleteButtons.remove(i);
                 compassClueSegments.remove(i);
             }
+        }
+    }
+
+    public Clue getClue() {
+        List<ClueSegment> compassSegments = new ArrayList<>();
+        for(ClueSegmentView view : compassClueSegments) {
+            compassSegments.add(view.getClueSegment());
+        }
+        Clue clue = new Clue(geofenceSegment.getClueSegment(), compassSegments);
+        return clue;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        try {
+            intent.putExtra("clue", getClue());
+            setResult(RESULT_OK, intent);
+            finish();
+        } catch (NumberFormatException e) {
+            Util.displayOkDialog(this, "Syntax error in clue segment. Correct and try again.");
         }
     }
 }

@@ -15,7 +15,6 @@ public class LauncherActivity extends AppCompatActivity {
 
     public void onCreateButton(View v) {
         Intent intent = new Intent(this, ScavengerHuntCreatorActivity.class);
-        startActivity(intent);
-
+        startActivityForResult(intent, 2);
     }
 }

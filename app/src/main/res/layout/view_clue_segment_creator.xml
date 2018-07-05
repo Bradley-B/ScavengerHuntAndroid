@@ -108,7 +108,7 @@
                 android:id="@+id/clueRadiusView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="45"
+                android:layout_weight="60"
                 android:hint="radius (meters)"
                 android:inputType="number"
                 android:textColorLink="?attr/colorPrimary"
@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="clue message (this displays after the clue segment is discovered)"
+            android:hint="clue message (on solved)"
             android:inputType="textMultiLine"
             android:textAlignment="center" />
 

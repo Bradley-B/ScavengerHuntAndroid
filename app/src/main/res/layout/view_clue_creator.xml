@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/clueSummaryView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" --placeholder for geofence clue summary--"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/clueSummaryView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--placeholder for compass clue summary--"
+            android:textAlignment="textEnd"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/clueUpButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="onClueMoveUp"
+                android:text="Move Up" />
+
+            <Button
+                android:id="@+id/clueDownButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Move Down" />
+
+            <Button
+                android:id="@+id/clueEditButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Edit" />
+
+            <Button
+                android:id="@+id/clueRemoveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="onClueDelete"
+                android:text="Delete" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="?attr/colorPrimary"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+</merge>

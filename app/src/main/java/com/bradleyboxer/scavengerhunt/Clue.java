@@ -112,4 +112,8 @@ public class Clue implements Serializable {
     public boolean isSimpleClue() {
         return simpleClue;
     }
+
+    public int getNumberOfSegments() {
+        return compassSegments.size()+1;
+    }
 }
