@@ -117,7 +117,12 @@ public class ClueCreatorActivity extends AppCompatActivity {
         for(ClueSegmentView view : compassClueSegments) {
             compassSegments.add(view.getClueSegment());
         }
-        Clue clue = new Clue(geofenceSegment.getClueSegment(), compassSegments);
+        Clue clue;
+        if(compassSegments.size()>0) {
+            clue = new Clue(geofenceSegment.getClueSegment(), compassSegments);
+        } else {
+            clue = new Clue(geofenceSegment.getClueSegment().getClueText(), geofenceSegment.getClueSegment().getGeofenceData());
+        }
         return clue;
     }
 

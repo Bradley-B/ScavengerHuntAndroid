@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:enabled="false"
+            android:onClick="onStartButton"
             android:text="Start Loaded Scavenger Hunt"
             tools:layout_editor_absoluteX="95dp"
             tools:layout_editor_absoluteY="95dp" />

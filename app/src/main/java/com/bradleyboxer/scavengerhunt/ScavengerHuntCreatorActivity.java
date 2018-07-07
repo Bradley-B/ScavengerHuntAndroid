@@ -101,7 +101,7 @@ public class ScavengerHuntCreatorActivity extends AppCompatActivity {
     public void onClueDelete(final View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete this clue?");
-        builder.setPositiveButton("Yes, delete this clue!", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Yes, delete this clue", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 deleteClue(v);
             }
@@ -126,5 +126,34 @@ public class ScavengerHuntCreatorActivity extends AppCompatActivity {
             clueViewList.add(position-1, clueView);
             clueDisplay.addView(clueView, position-1);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to exit scavenger hunt creation? Once you leave this screen, the clues cannot be viewed or modified.");
+        builder.setPositiveButton("Finalize Scavenger Hunt", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ArrayList<Clue> clueList = new ArrayList<>();
+                for(ClueView clueView : clueViewList) {
+                    clueList.add(clueView.getClue());
+                }
+
+                final Intent intent = new Intent();
+                intent.putExtra("clueList", clueList);
+                setResult(RESULT_OK, intent);
+                finish();
+
+            }
+        });
+        builder.setNegativeButton("Keep Working", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //do nothing, they will try again
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }

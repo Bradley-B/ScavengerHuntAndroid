@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="65"
                 android:hint="latitude"
-                android:inputType="numberDecimal"
+                android:inputType="numberSigned|numberDecimal"
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="60"
                 android:hint="longitude"
-                android:inputType="numberDecimal"
+                android:inputType="numberSigned|numberDecimal"
                 android:textColorLink="?attr/colorPrimary"
                 android:textSize="18sp" />
 

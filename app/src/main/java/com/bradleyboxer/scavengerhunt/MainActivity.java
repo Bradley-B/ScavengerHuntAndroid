@@ -84,34 +84,7 @@ public class MainActivity extends AppCompatActivity {
         //} catch (SecurityException e) {e.printStackTrace();} catch (Exception ex) {}
     }
 
-    private void setupClues() {
-//        Clues.clues.add(new Clue(Clues.getClueOne(), new GeofenceData(40.590889, -74.667181, 200, "A New Journey")));
-//
-//        Clues.clues.add(new Clue(Clues.getClueOne2(), new GeofenceData(40.591897, -74.624395, 200, "Kid Street"),
-//                Clues.getClueTwo(), new GeofenceData(40.591363, -74.624316, 15, "Your First Find")));
-//
-//        Clues.clues.add(new Clue(Clues.getClueTwo2(), new GeofenceData(40.544621, -74.624019, 1000, "Duke Estate"),
-//                Clues.getClueThree(), new GeofenceData(40.549693, -74.632098, 10, "Another Letter For You")));
-//
-//        Clues.clues.add(new Clue(Clues.getClueThree2(), new GeofenceData(40.509199, -74.568875, 500, "Colonial Park"),
-//                Clues.getClueFour(), new GeofenceData(40.507904, -74.574650, 20, "Letter Again")));
-//
-//        Clues.clues.add(new Clue(Clues.getClueFour2(), new GeofenceData(40.582799, -74.553179, 500, "Hawk Watch"),
-//                Clues.getClueFive(), new GeofenceData(40.582283, -74.555999, 20, "Surprise")));
-
-
-        Clues.clues.add(new Clue(
-                new ClueSegment("geo-kidstreet", new GeofenceData(40.591897, -74.624395, 200, "Kid Street")),
-                new ClueSegment("compass-kidstreet 1", new GeofenceData(40.5918971, -74.6243951, 10, "Kid Street Compass 1")),
-                new ClueSegment("compass-kidstreet 2", new GeofenceData(40.591897, -74.624395, 10, "Kid Street Compass 2"))
-        ));
-
-        //Clues.clues.add(new Clue(Clues.getClueOne2(), new GeofenceData(40.591897, -74.624395, 200, "Kid Street"),
-        //        Clues.getClueTwo(), new GeofenceData(40.591363, -74.624316, 15, "Your First Find")));
-    }
-
     private void setupGeofence() {
-        setupClues();
 
         if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SUCCESS) {
             try {
