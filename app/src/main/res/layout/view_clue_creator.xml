@@ -34,7 +34,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClick="onClueMoveUp"
-                android:text="Move Up" />
+                android:text="Move Up"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/clueDownButton"
@@ -42,14 +43,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:enabled="false"
-                android:text="Move Down" />
+                android:text="Move Down"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/clueEditButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:enabled="false"
+                android:onClick="onClueEdit"
                 android:text="Edit" />
 
             <Button

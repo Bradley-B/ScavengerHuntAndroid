@@ -7,9 +7,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ClueView extends LinearLayout {
+public class ClueView extends LinearLayout implements Serializable {
 
     TextView textView;
     TextView textView2;

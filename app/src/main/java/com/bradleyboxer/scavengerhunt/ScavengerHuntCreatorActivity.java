@@ -1,5 +1,7 @@
 package com.bradleyboxer.scavengerhunt;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -50,12 +52,23 @@ public class ScavengerHuntCreatorActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            Clue clue = (Clue) data.getSerializableExtra("clue");
-            if(clue!=null) {
+            Clue newClue = (Clue) data.getSerializableExtra("clue");
+            if(newClue!=null) {
                 //display clue
-                ClueView clueView = new ClueView(this, clue);
+                ClueView clueView = new ClueView(this, newClue);
                 clueDisplay.addView(clueView);
                 clueViewList.add(clueView);
+
+            }
+        } else if(requestCode == 2 && resultCode == RESULT_OK) {
+            Clue editedClue = (Clue) data.getSerializableExtra("clue");
+            int clueNum = data.getIntExtra("clueNumber", -1);
+            if(editedClue!=null && clueNum>=0) {
+                ClueView clueView = new ClueView(this, editedClue);
+                clueDisplay.removeViewAt(clueNum);
+                clueViewList.remove(clueNum);
+                clueDisplay.addView(clueView, clueNum);
+                clueViewList.add(clueNum, clueView);
             }
         }
     }
@@ -70,10 +83,37 @@ public class ScavengerHuntCreatorActivity extends AppCompatActivity {
         return null;
     }
 
-    public void onClueDelete(View v) {
+    public void onClueEdit(View v) {
+        ClueView clueView = getClueViewFromButton(v);
+        Intent intent = new Intent(this, ClueCreatorActivity.class);
+        intent.putExtra("clue", clueView.getClue());
+        intent.putExtra("requestCode", 2);
+        intent.putExtra("clueNumber", clueViewList.indexOf(clueView));
+        startActivityForResult(intent, 2);
+    }
+
+    public void deleteClue(View v) {
         ClueView clueView = getClueViewFromButton(v);
         clueViewList.remove(clueView);
         clueDisplay.removeView(clueView);
+    }
+
+    public void onClueDelete(final View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this clue?");
+        builder.setPositiveButton("Yes, delete this clue!", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteClue(v);
+            }
+        });
+        builder.setNegativeButton("No, wait, dont!", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //user cancelled, do nothing
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void onClueMoveUp(View v) {

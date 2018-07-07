@@ -21,6 +21,8 @@ public class ClueCreatorActivity extends AppCompatActivity {
     ClueSegmentView geofenceSegment;
     List<ClueSegmentView> compassClueSegments;
     List<Button> deleteButtons;
+    int requestCode = -1;
+    int clueNumber = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,37 @@ public class ClueCreatorActivity extends AppCompatActivity {
         scrollableClueSegments = (LinearLayout) findViewById(R.id.scrollableClueSegments);
         deleteButtons = new ArrayList<>();
         compassClueSegments = new ArrayList<>();
+
+        Intent intent = getIntent();
+        requestCode = intent.getIntExtra("requestCode", -1);
+        clueNumber = intent.getIntExtra("clueNumber", -1);
+        if(requestCode>=0) {
+            Clue clueToEdit = (Clue) intent.getSerializableExtra("clue");
+            setGeofenceClueSegment(clueToEdit.getGeofenceSegment());
+            for(ClueSegment compassSegment : clueToEdit.getCompassSegments()) {
+                newCompassClueSegment(compassSegment);
+            }
+        }
+
     }
 
     public void onNewCompassClueSegment(View v) {
-        ClueSegmentView clueSegmentView = new ClueSegmentView(this);
+        newCompassClueSegment(null);
+    }
+
+    public void setGeofenceClueSegment(ClueSegment geofenceClueSegment) {
+        ((ClueSegmentView)findViewById(R.id.geofenceClueSegmentView)).setClueSegmentData(geofenceClueSegment);
+    }
+
+    public void newCompassClueSegment(ClueSegment clueSegment) {
+        ClueSegmentView clueSegmentView;
+
+        if(clueSegment!=null) {
+            clueSegmentView = new ClueSegmentView(this, clueSegment);
+        } else {
+            clueSegmentView = new ClueSegmentView(this);
+        }
+
         Button deleteButton = new Button(this);
 
         deleteButton.setText(" ^ Delete Above Compass Segment ^ ");
@@ -52,7 +81,6 @@ public class ClueCreatorActivity extends AppCompatActivity {
         scrollableClueSegments.addView(deleteButton);
     }
 
-
     public void confirmRemoveDeleteButton(final View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete this clue segment?");
@@ -64,7 +92,6 @@ public class ClueCreatorActivity extends AppCompatActivity {
         builder.setNegativeButton("No, wait, dont!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //user cancelled, do nothing
-                // :(
             }
         });
 
@@ -85,7 +112,7 @@ public class ClueCreatorActivity extends AppCompatActivity {
         }
     }
 
-    public Clue getClue() {
+    public Clue getClue() throws NumberFormatException {
         List<ClueSegment> compassSegments = new ArrayList<>();
         for(ClueSegmentView view : compassClueSegments) {
             compassSegments.add(view.getClueSegment());
@@ -96,13 +123,33 @@ public class ClueCreatorActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
+        final Intent intent = new Intent();
         try {
             intent.putExtra("clue", getClue());
+
+            if(clueNumber >=0 && requestCode>=0) {
+                intent.putExtra("clueNumber", clueNumber);
+            }
+
             setResult(RESULT_OK, intent);
             finish();
         } catch (NumberFormatException e) {
-            Util.displayOkDialog(this, "Syntax error in clue segment. Correct and try again.");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Syntax error in clue segment.");
+            builder.setPositiveButton("I'll fix it", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //do nothing, they will try again
+                }
+            });
+            builder.setNegativeButton("Discard clue", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
     }
 }

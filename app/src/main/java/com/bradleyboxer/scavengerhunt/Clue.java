@@ -88,6 +88,9 @@ public class Clue implements Serializable {
         return geofenceSegment.getClueText();
     }
 
+    public ClueSegment getGeofenceSegment() {
+        return geofenceSegment;
+    }
 
     public void setDiscovered() {
         discovered = true;
@@ -116,4 +119,6 @@ public class Clue implements Serializable {
     public int getNumberOfSegments() {
         return compassSegments.size()+1;
     }
+
+    public List<ClueSegment> getCompassSegments() {return compassSegments;}
 }

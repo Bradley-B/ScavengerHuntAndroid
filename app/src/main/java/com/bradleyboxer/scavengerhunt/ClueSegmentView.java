@@ -17,11 +17,7 @@ public class ClueSegmentView extends LinearLayout {
         super(context, null, 0);
         setOrientation(VERTICAL);
         init();
-        segmentNameField.setText(clueSegment.getGeofenceData().getName());
-        segmentLatitudeField.setText(""+clueSegment.getGeofenceData().latitude);
-        segmentLongitudeField.setText(""+clueSegment.getGeofenceData().longitude);
-        segmentRadiusField.setText(""+clueSegment.getGeofenceData().radius);
-        segmentClueTextField.setText(clueSegment.getClueText());
+        setClueSegmentData(clueSegment);
     }
 
     public ClueSegmentView(Context context) {
@@ -56,6 +52,14 @@ public class ClueSegmentView extends LinearLayout {
 
     }
 
+    public void setClueSegmentData(ClueSegment clueSegment) {
+        segmentNameField.setText(clueSegment.getGeofenceData().getName());
+        segmentLatitudeField.setText(""+clueSegment.getGeofenceData().latitude);
+        segmentLongitudeField.setText(""+clueSegment.getGeofenceData().longitude);
+        segmentRadiusField.setText(""+clueSegment.getGeofenceData().radius);
+        segmentClueTextField.setText(clueSegment.getClueText());
+    }
+
     public boolean verifyTextFields() {
         try {
             Double.parseDouble(segmentLatitudeField.getText().toString());
@@ -67,7 +71,7 @@ public class ClueSegmentView extends LinearLayout {
         }
     }
 
-    public ClueSegment getClueSegment() {
+    public ClueSegment getClueSegment() throws NumberFormatException {
         String name = segmentNameField.getText().toString();
         double latitude = Double.parseDouble(segmentLatitudeField.getText().toString());
         double longitude = Double.parseDouble(segmentLongitudeField.getText().toString());
