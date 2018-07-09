@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <service android:name=".GeofenceTransitionsIntentService" />
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".CompassActivity" />
         <activity android:name=".LauncherActivity">
             <intent-filter>
@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ScavengerHuntCreatorActivity" />
-        <activity android:name=".ClueCreatorActivity"></activity>
+        <activity android:name=".ClueCreatorActivity" />
+        <activity android:name=".ScavengerHuntRecieverActivity"></activity>
     </application>
 
 </manifest>

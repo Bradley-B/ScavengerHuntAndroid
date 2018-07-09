@@ -56,16 +56,6 @@
             tools:layout_editor_absoluteY="95dp" />
 
         <Button
-            android:id="@+id/shareButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:enabled="false"
-            android:text="Share Loaded Scavenger Hunt"
-            tools:layout_editor_absoluteX="67dp"
-            tools:layout_editor_absoluteY="231dp" />
-
-        <Button
             android:id="@+id/createButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,11 +66,22 @@
             tools:layout_editor_absoluteY="162dp" />
 
         <Button
-            android:id="@+id/loadButton"
+            android:id="@+id/shareButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:enabled="false"
+            android:onClick="onShareButton"
+            android:text="Share Loaded Scavenger Hunt"
+            tools:layout_editor_absoluteX="67dp"
+            tools:layout_editor_absoluteY="231dp" />
+
+        <Button
+            android:id="@+id/loadButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:onClick="onLoadButton"
             android:text="Load Existing Scavenger Hunt"
             tools:layout_editor_absoluteX="67dp"
             tools:layout_editor_absoluteY="323dp" />

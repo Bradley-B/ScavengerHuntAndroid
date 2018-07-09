@@ -3,20 +3,25 @@ package com.bradleyboxer.scavengerhunt;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Base64;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 public class Util {
 
-    public static void displayOkDialog(Context context, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(message);
-        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //do nothing
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+    public static String serialize(ArrayList<Clue> clueList) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream so = new ObjectOutputStream(bo);
+            so.writeObject(clueList);
+            so.flush();
+            return new String(Base64.encode(bo.toByteArray(), Base64.DEFAULT));
+        } catch (Exception e) {
+            Log.e("GEOFENCE UI", "serialization error", e);
+        }
+        return null;
     }
 }

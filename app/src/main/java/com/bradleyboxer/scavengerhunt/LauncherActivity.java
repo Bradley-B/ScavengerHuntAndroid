@@ -1,24 +1,24 @@
 package com.bradleyboxer.scavengerhunt;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ShareActionProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -26,21 +26,25 @@ public class LauncherActivity extends AppCompatActivity {
     boolean savedHuntExists;
     ArrayList<Clue> scavengerHunt;
 
+    Button startButton;
+    Button shareButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
+        startButton = findViewById(R.id.startButton);
+        shareButton = findViewById(R.id.shareButton);
+
         scavengerHunt = getSavedHunt();
         updateButtonStates(savedHuntExists);
+
     }
 
     public void updateButtonStates(boolean savedHuntExists) {
-        Button startButton = findViewById(R.id.startButton);
-        Button shareButton = findViewById(R.id.shareButton);
-
         startButton.setEnabled(savedHuntExists);
-        //shareButton.setEnabled(savedHuntExists);
+        shareButton.setEnabled(savedHuntExists);
     }
 
     public ArrayList<Clue> getSavedHunt() {
@@ -92,6 +96,30 @@ public class LauncherActivity extends AppCompatActivity {
     public void onCreateButton(View v) {
         Intent intent = new Intent(this, ScavengerHuntCreatorActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+    public void onLoadButton(View v) {
+        Intent intent = new Intent(this, ScavengerHuntRecieverActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    public void onShareButton(View v) {
+        String serializedClueList = Util.serialize(scavengerHunt);
+
+        //String existingButtonText = shareButton.getText().toString();
+        //shareButton.setText("please wait. this could take a bit");
+        //shareButton.setEnabled(false);
+        //something in this method takes awhile... put that method call here
+        //shareButton.setText(existingButtonText);
+        //shareButton.setEnabled(true);
+
+        if(serializedClueList != null) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Clue List");
+            intent.putExtra(Intent.EXTRA_TEXT, serializedClueList);
+            startActivity(Intent.createChooser(intent, "Share via"));
+        }
     }
 
     public void overrideOrMerge(final File file, final ArrayList<Clue> scavengerHunt) {
