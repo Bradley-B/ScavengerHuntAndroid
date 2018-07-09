@@ -74,29 +74,32 @@ public class GeofenceTransitionsIntentService extends IntentService {
     }
 
     private Clue getTriggeredClue(GeofencingEvent event) {
+
+        //logically, the triggered clue is the one closest to where you are
+
         List<Geofence> triggeringGeofences = event.getTriggeringGeofences();
         Location triggeringLocation = event.getTriggeringLocation();
 
-        for(Clue clue : Clues.clues) { //find the clue in the list equal to
-            boolean name = false;
-            for(Geofence geofence : triggeringGeofences) {
-                name = name || geofence.getRequestId().equals(clue.getGeofenceGeofenceData().getName());
-            }
-
+        Clue triggeredClue = null;
+        float minDistanceBetween = Float.MAX_VALUE;
+        for(Clue clue : Clues.getSafeClueList(getFilesDir())) {
             float[] distanceBetween = new float[1];
             Location.distanceBetween(triggeringLocation.getLatitude(), triggeringLocation.getLongitude(),
                     clue.getGeofenceGeofenceData().latitude, clue.getGeofenceGeofenceData().longitude, distanceBetween);
-
-            boolean location = distanceBetween[0]<=clue.getGeofenceGeofenceData().radius;
-            if(name && location) {
-                return clue;
+            if(distanceBetween[0]<minDistanceBetween) {
+                minDistanceBetween = distanceBetween[0];
+                triggeredClue = clue;
             }
         }
-        return new Clue("You have triggered a Scavenger Hunt geofence that does not exist\n" +
-                "in the Scavenger Hunt app. This should not be possible.\n" +
-                "Please reload the app.\n" +
-                "Try force stopping and clearing the app cache if this problem persists.",
-                new GeofenceData(0, 0, 0, "Null"));
+
+        if (triggeredClue != null) {
+            return triggeredClue;
+        } else {
+            Log.e("GEOFENCE", "triggered clue that does not exist. See GeofenceTransitionsIntentService.java getTriggeredClue()");
+            return new Clue("You have triggered a clue when none exist \n This should not be possible.",
+                    new GeofenceData(0, 0, 20, "Null"));
+        }
+
     }
 
     private void sendNotification(Clue clue) {

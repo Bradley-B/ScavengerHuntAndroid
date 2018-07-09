@@ -1,5 +1,10 @@
 package com.bradleyboxer.scavengerhunt;
 
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +13,7 @@ import java.util.List;
  */
 
 public class Clues {
-    public static List<Clue> clues = new ArrayList<>(); //this is probably a bad idea, but I don't know what else to do
+    public static ArrayList<Clue> clues = new ArrayList<>(); //this is probably a bad idea, but I don't know what else to do
 
     public static void addClue(Clue newClue) {
         boolean exists = false;
@@ -19,6 +24,33 @@ public class Clues {
         }
         if(!exists) {
             clues.add(newClue);
+        }
+    }
+
+    public static ArrayList<Clue> loadClueList(File filesDirectory) {
+        try {
+            File savedHunt = new File(filesDirectory, "savedScavengerHunt");
+            boolean savedHuntExists = !savedHunt.createNewFile();
+            if (savedHuntExists) {
+                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(savedHunt));
+                return (ArrayList<Clue>) inputStream.readObject();
+            }
+        } catch (Exception e) {
+            Log.e("GEOFENCE UI", "Exception in getting saved scavenger hunt", e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ArrayList<Clue> getSafeClueList(File filesDirectory) {
+        if(clues!=null && clues.size()>0) {
+            return clues;
+        } else {
+            ArrayList<Clue> clueList = loadClueList(filesDirectory);
+            if(clueList!=null && clues.size()>0) {
+                clues = clueList;
+            }
+            return clues;
         }
     }
 

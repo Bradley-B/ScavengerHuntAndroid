@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupGeofence() {
 
+        if(Clues.getSafeClueList(getFilesDir()).size()<1) {
+            Log.e("GEOFENCE", "called setupGeofence() with no clues stored");
+            return;
+        }
+
         if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SUCCESS) {
             try {
                 throw new RuntimeException("google play not available. try and restart the service, or something, I guess");
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         geoData = new ArrayList<>();
-        for(Clue clue : Clues.clues) {
+        for(Clue clue : Clues.getSafeClueList(getFilesDir())) {
             geoData.add(clue.getGeofenceGeofenceData());
         }
 
