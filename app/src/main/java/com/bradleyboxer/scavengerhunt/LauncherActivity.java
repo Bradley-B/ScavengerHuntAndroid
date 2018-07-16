@@ -1,8 +1,12 @@
 package com.bradleyboxer.scavengerhunt;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,10 +26,6 @@ import java.util.ArrayList;
 
 public class LauncherActivity extends AppCompatActivity {
 
-    File savedHunt;
-    boolean savedHuntExists;
-    ArrayList<Clue> scavengerHunt;
-
     Button startButton;
     Button shareButton;
 
@@ -37,9 +37,11 @@ public class LauncherActivity extends AppCompatActivity {
         startButton = findViewById(R.id.startButton);
         shareButton = findViewById(R.id.shareButton);
 
-        scavengerHunt = getSavedHunt();
-        updateButtonStates(savedHuntExists);
+        updateButtonStates(hasSavedHunt());
 
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        }
     }
 
     public void updateButtonStates(boolean savedHuntExists) {
@@ -47,23 +49,13 @@ public class LauncherActivity extends AppCompatActivity {
         shareButton.setEnabled(savedHuntExists);
     }
 
-    public ArrayList<Clue> getSavedHunt() {
-        try {
-            savedHunt = new File(getFilesDir(), "savedScavengerHunt");
-            savedHuntExists = !savedHunt.createNewFile();
-            if (savedHuntExists) {
-                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(savedHunt));
-                return (ArrayList<Clue>) inputStream.readObject();
-            }
-        } catch (Exception e) {
-            Log.e("GEOFENCE UI", "Exception in getting saved scavenger hunt", e);
-            e.printStackTrace();
-        }
-        return null;
+    public boolean hasSavedHunt() {
+        File savedHunt = new File(getFilesDir(), "savedScavengerHunt");
+        return savedHunt.exists();
     }
 
     public void mergeHunt(File file, ArrayList<Clue> scavengerHunt) {
-        ArrayList<Clue> oldHunt = getSavedHunt();
+        ArrayList<Clue> oldHunt = Clues.getSafeClueList(getFilesDir());
         oldHunt.addAll(scavengerHunt);
         saveHunt(file, oldHunt);
     }
@@ -74,9 +66,7 @@ public class LauncherActivity extends AppCompatActivity {
             file.createNewFile();
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
             outputStream.writeObject(scavengerHunt);
-            this.scavengerHunt = scavengerHunt;
-            savedHuntExists = true;
-            updateButtonStates(true);
+            updateButtonStates(hasSavedHunt());
         } catch (IOException e) {
             Log.e("GEOFENCE UI", "Exception in saving scavenger hunt", e);
             e.printStackTrace();
@@ -85,11 +75,13 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     public void onStartButton(View v) {
-        for(Clue clue : scavengerHunt) {
+        ArrayList<Clue> clueList = Clues.getSafeClueList(getFilesDir());
+        for(Clue clue : clueList) {
             Clues.addClue(clue);
         }
 
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("clueList", clueList);
         startActivity(intent);
     }
 
@@ -104,7 +96,7 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     public void onShareButton(View v) {
-        String serializedClueList = Util.serialize(scavengerHunt);
+        String serializedClueList = Util.serialize(Clues.getSafeClueList(getFilesDir()));
 
         //String existingButtonText = shareButton.getText().toString();
         //shareButton.setText("please wait. this could take a bit");
@@ -148,12 +140,14 @@ public class LauncherActivity extends AppCompatActivity {
             ArrayList<Clue> clues = (ArrayList<Clue>) data.getSerializableExtra("clueList");
             Log.i("GEOFENCE UI", "recieved "+clues.size()+" clues");
             if(clues!=null && clues.size()>0) {
-                if(savedHuntExists) {
-                    overrideOrMerge(savedHunt, clues);
+                File file = Clues.getSavedScavengerHuntLocation(getFilesDir());
+                if(hasSavedHunt()) {
+                    overrideOrMerge(file, clues);
                 } else {
-                    saveHunt(savedHunt, clues);
+                    saveHunt(file, clues);
                 }
             }
         }
     }
+
 }

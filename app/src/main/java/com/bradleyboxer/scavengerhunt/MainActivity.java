@@ -38,11 +38,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupGeofence();
 
         Intent intent = getIntent();
-        Clue clue = (Clue) intent.getSerializableExtra("clue");
 
+        ArrayList<Clue> clueList = (ArrayList<Clue>) intent.getSerializableExtra("clueList");
+        if(clueList!=null && clueList.size()>0) {
+            setupGeofence(clueList);
+        }
+
+        Clue clue = (Clue) intent.getSerializableExtra("clue");
         if(clue!=null) {
             //Clues.updateClueListWith(clue);
             // if we do this it means clicking on the notification
@@ -84,12 +88,7 @@ public class MainActivity extends AppCompatActivity {
         //} catch (SecurityException e) {e.printStackTrace();} catch (Exception ex) {}
     }
 
-    private void setupGeofence() {
-
-        if(Clues.getSafeClueList(getFilesDir()).size()<1) {
-            Log.e("GEOFENCE", "called setupGeofence() with no clues stored");
-            return;
-        }
+    private void setupGeofence(ArrayList<Clue> clueList) {
 
         if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SUCCESS) {
             try {
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         geoData = new ArrayList<>();
-        for(Clue clue : Clues.getSafeClueList(getFilesDir())) {
+        for(Clue clue : clueList) {
             geoData.add(clue.getGeofenceGeofenceData());
         }
 

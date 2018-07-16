@@ -26,25 +26,17 @@ public class ScavengerHuntRecieverActivity extends AppCompatActivity {
         enteredText = findViewById(R.id.serializedScavengerHunt);
     }
 
-    public ArrayList<Clue> deserialize(String serializedObject) throws Exception {
-        byte b[] = Base64.decode(serializedObject.getBytes(), Base64.DEFAULT);
-        ByteArrayInputStream bi = new ByteArrayInputStream(b);
-        ObjectInputStream si = new ObjectInputStream(bi);
-        ArrayList<Clue> clueList = (ArrayList<Clue>) si.readObject();
-        return clueList;
-    }
-
     @Override
     public void onBackPressed() {
         try {
             Intent intent = new Intent();
             String text = enteredText.getText().toString().trim();
-            ArrayList<Clue> clueList = deserialize(text);
+            ArrayList<Clue> clueList = Util.deserialize(text);
             intent.putExtra("clueList", clueList);
             setResult(RESULT_OK, intent);
             finish();
         } catch (Exception e) {
-            Log.e("GEOFENCE UI", "serialization error", e);
+            Log.e("GEOFENCE UI", "serialization error");
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Incorrect object serialization data. Please correct and try again.");

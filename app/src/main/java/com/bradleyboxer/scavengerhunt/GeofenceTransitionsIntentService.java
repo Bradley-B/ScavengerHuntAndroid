@@ -78,6 +78,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         //logically, the triggered clue is the one closest to where you are
 
         List<Geofence> triggeringGeofences = event.getTriggeringGeofences();
+
         Location triggeringLocation = event.getTriggeringLocation();
 
         Clue triggeredClue = null;
@@ -95,9 +96,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
         if (triggeredClue != null) {
             return triggeredClue;
         } else {
-            Log.e("GEOFENCE", "triggered clue that does not exist. See GeofenceTransitionsIntentService.java getTriggeredClue()");
-            return new Clue("You have triggered a clue when none exist \n This should not be possible.",
-                    new GeofenceData(0, 0, 20, "Null"));
+            Log.e("GEOFENCE", "triggered clue that does not exist. See GeofenceTransitionsIntentService.java getTriggeredClue()." +
+                    " Triggering geofence: "+triggeringGeofences.get(0).getRequestId());
+            return new Clue("There was an error getting the clue named \""+triggeringGeofences.get(0).getRequestId()+
+                    "\". Please restart the app.",
+                    new GeofenceData(0, 0, 20, "Error"));
         }
 
     }

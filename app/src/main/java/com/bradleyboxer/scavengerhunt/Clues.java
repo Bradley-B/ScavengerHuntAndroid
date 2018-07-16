@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
  */
 
 public class Clues {
+
     public static ArrayList<Clue> clues = new ArrayList<>(); //this is probably a bad idea, but I don't know what else to do
 
     public static void addClue(Clue newClue) {
@@ -27,31 +30,38 @@ public class Clues {
         }
     }
 
-    public static ArrayList<Clue> loadClueList(File filesDirectory) {
+    public static File getSavedScavengerHuntLocation(File filesDirectory) {
+        return new File(filesDirectory, "savedScavengerHunt");
+    }
+
+    private static ArrayList<Clue> loadClueList(File filesDirectory) {
         try {
-            File savedHunt = new File(filesDirectory, "savedScavengerHunt");
-            boolean savedHuntExists = !savedHunt.createNewFile();
-            if (savedHuntExists) {
-                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(savedHunt));
-                return (ArrayList<Clue>) inputStream.readObject();
+            File clueListLocation = getSavedScavengerHuntLocation(filesDirectory);
+            if (clueListLocation.exists()) {
+                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(clueListLocation));
+                ArrayList<Clue> clueList = (ArrayList<Clue>) inputStream.readObject();
+                Log.i("GEOFENCE UI", "loading clue list with "+clueList.size()+" clues");
+                return clueList;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log.e("GEOFENCE UI", "Exception in getting saved scavenger hunt", e);
             e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Log.e("GEOFENCE UI", "Exception in getting saved scavenger hunt", ex);
+            ex.printStackTrace();
         }
         return null;
     }
 
     public static ArrayList<Clue> getSafeClueList(File filesDirectory) {
-        if(clues!=null && clues.size()>0) {
-            return clues;
-        } else {
-            ArrayList<Clue> clueList = loadClueList(filesDirectory);
-            if(clueList!=null && clues.size()>0) {
-                clues = clueList;
-            }
-            return clues;
+        ArrayList<Clue> clueList = loadClueList(filesDirectory);
+        if(clueList!=null) {
+            clues.removeAll(clues);
+            clues.addAll(clueList);
         }
+        Log.i("GEOFENCE UI", "getting safe clue list with "+clues.size()+" clues");
+
+        return clues;
     }
 
     public static void updateClueListWith(Clue newClue) {
