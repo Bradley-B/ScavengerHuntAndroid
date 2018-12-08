@@ -12,20 +12,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".GeofenceTransitionsIntentService" />
+        <service android:name=".v2.GeofenceTransitionsIntentService" />
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".CompassActivity" />
-        <activity android:name=".LauncherActivity">
+        <activity android:name=".v2.MainActivity" />
+        <activity android:name=".v2.CompassActivity" />
+        <activity android:name=".v2.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScavengerHuntCreatorActivity" />
-        <activity android:name=".ClueCreatorActivity" />
-        <activity android:name=".ScavengerHuntRecieverActivity"></activity>
+        <activity android:name=".v2.ScavengerHuntCreatorActivity" />
+        <activity android:name=".v2.ClueCreatorActivity" />
+        <activity android:name=".v2.ScavengerHuntRecieverActivity"></activity>
     </application>
 
 </manifest>

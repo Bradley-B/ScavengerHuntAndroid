@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bradleyboxer.scavengerhunt.CompassActivity">
+    tools:context="com.bradleyboxer.scavengerhunt.v2.CompassActivity">
 
     <ImageView
         android:id="@+id/main_image_dial"

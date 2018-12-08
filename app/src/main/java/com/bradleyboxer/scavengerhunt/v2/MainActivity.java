@@ -1,4 +1,4 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -13,25 +13,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bradleyboxer.scavengerhunt.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     GeofencingClient mGeofencingClient;
-    List<Geofence> mGeofenceList;
     PendingIntent mGeofencePendingIntent;
-    List<GeofenceData> geoData;
     Clue triggeringClue;
 
     @Override
@@ -48,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
         Clue clue = (Clue) intent.getSerializableExtra("clue");
         if(clue!=null) {
-            //Clues.updateClueListWith(clue);
+            Clues.updateClueListWith(clue);
             // if we do this it means clicking on the notification
             // will resume the hunt where they left off, and they can't go back
 
-            String textToDisplay = "tell bradley the MainActivity onCreate() clue structure is wrong";
+            String textToDisplay = "tell the devs MainActivity onCreate() clue structure is wrong";
             if(clue.hasBeenSolved()) { //after compass
 
                 boolean unsolved = clue.containsUnsolvedSegments();
@@ -97,12 +94,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        geoData = new ArrayList<>();
+        List<GeofenceData> geoData = new ArrayList<>();
         for(Clue clue : clueList) {
             geoData.add(clue.getGeofenceGeofenceData());
         }
 
-        mGeofenceList = new ArrayList<>();
+        List<Geofence> mGeofenceList = new ArrayList<>();
         for(GeofenceData data : geoData) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(data.getName())
@@ -140,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
                         ((TextView) findViewById(R.id.geofenceDisplay)).setText("Geofence error: "+e.getMessage());
                     }
                 });
-
-
+        mGeofencingClient.removeGeofences(new ArrayList<String>() {
+        });
     }
 
     /**
@@ -161,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
-        // calling addGeofences() and removeGeofences().
+        // calling addGeofences() and removeGeofences(). TODO change to UPDATE_CURRENT when implementing removeGeofences()
         mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
-                FLAG_UPDATE_CURRENT);
+                FLAG_CANCEL_CURRENT);
         return mGeofencePendingIntent;
     }
 

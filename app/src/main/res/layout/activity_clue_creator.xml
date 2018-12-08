@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ClueCreatorActivity">
+    tools:context=".v2.ClueCreatorActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="347dp" />
 
-            <com.bradleyboxer.scavengerhunt.ClueSegmentView
+            <com.bradleyboxer.scavengerhunt.v2.ClueSegmentView
                 android:id="@+id/geofenceClueSegmentView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -47,7 +47,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </com.bradleyboxer.scavengerhunt.ClueSegmentView>
+            </com.bradleyboxer.scavengerhunt.v2.ClueSegmentView>
 
             <TextView
                 android:id="@+id/compassClueSegmentLabel"

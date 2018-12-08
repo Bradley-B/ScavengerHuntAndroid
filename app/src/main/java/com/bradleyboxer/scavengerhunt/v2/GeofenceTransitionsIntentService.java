@@ -1,4 +1,4 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
 import android.app.IntentService;
 import android.app.NotificationChannel;
@@ -11,20 +11,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
 
 import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.bradleyboxer.scavengerhunt.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GeofenceTransitionsIntentService extends IntentService {

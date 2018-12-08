@@ -1,17 +1,15 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.ArrayRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
+import com.bradleyboxer.scavengerhunt.R;
+
 import java.util.ArrayList;
 
 public class ScavengerHuntRecieverActivity extends AppCompatActivity {

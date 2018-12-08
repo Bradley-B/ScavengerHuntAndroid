@@ -1,8 +1,5 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.util.Base64;
 import android.util.Log;
 

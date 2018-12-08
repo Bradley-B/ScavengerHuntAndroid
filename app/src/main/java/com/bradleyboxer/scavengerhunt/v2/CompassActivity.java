@@ -1,6 +1,5 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +13,8 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bradleyboxer.scavengerhunt.R;
 
 public class CompassActivity extends AppCompatActivity {
     private LocationManager lm;

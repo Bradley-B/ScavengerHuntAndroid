@@ -1,14 +1,14 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bradleyboxer.scavengerhunt.R;
+
 import java.io.Serializable;
-import java.util.List;
 
 public class ClueView extends LinearLayout implements Serializable {
 

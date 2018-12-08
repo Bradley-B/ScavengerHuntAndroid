@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ScavengerHuntCreatorActivity"
+    tools:context=".v2.ScavengerHuntCreatorActivity"
     tools:showIn="@layout/activity_scavenger_hunt_creator">
 
     <ScrollView

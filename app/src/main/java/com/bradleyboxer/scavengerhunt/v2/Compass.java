@@ -1,4 +1,4 @@
-package com.bradleyboxer.scavengerhunt;
+package com.bradleyboxer.scavengerhunt.v2;
 
 import android.content.Context;
 import android.hardware.Sensor;
