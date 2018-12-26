@@ -32,9 +32,9 @@ public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compass);
-        arrowView = (ImageView) findViewById(R.id.main_image_hands);
-        findViewById(R.id.button2).setEnabled(false);
+        setContentView(R.layout.v2_activity_compass);
+        arrowView = (ImageView) findViewById(R.id.v2_main_image_hands);
+        findViewById(R.id.v2_button2).setEnabled(false);
 
         Intent intent = getIntent();
         Clue clue = (Clue) intent.getSerializableExtra("clue");
@@ -50,13 +50,13 @@ public class CompassActivity extends AppCompatActivity {
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mListener);
         } catch (SecurityException e) {e.printStackTrace();}
 
-        findViewById(R.id.main_image_dial).setOnTouchListener(new View.OnTouchListener() {
+        findViewById(R.id.v2_main_image_dial).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
                     compassTouches++;
                     if(shouldDisplayNextClue(-1f)) {
-                        findViewById(R.id.button2).setEnabled(true);
+                        findViewById(R.id.v2_button2).setEnabled(true);
                     }
                 }
                 return true;
@@ -71,14 +71,14 @@ public class CompassActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             if(location!=null) {
                 if(!locationLocked) {
-                    findViewById(R.id.main_image_hands).setVisibility(View.VISIBLE);
+                    findViewById(R.id.v2_main_image_hands).setVisibility(View.VISIBLE);
                     locationLocked = true;
                 }
                 compass.updateLocation(location);
                 float distanceToTarget = location.distanceTo(compass.getTarget());
-                ((TextView)findViewById(R.id.distanceView)).setText("Accuracy: "+location.getAccuracy()+"\nDistance to target: "+distanceToTarget);
+                ((TextView)findViewById(R.id.v2_distanceView)).setText("Accuracy: "+location.getAccuracy()+"\nDistance to target: "+distanceToTarget);
                 if(shouldDisplayNextClue(distanceToTarget)) {
-                    findViewById(R.id.button2).setEnabled(true);
+                    findViewById(R.id.v2_button2).setEnabled(true);
                 }
             }
         }

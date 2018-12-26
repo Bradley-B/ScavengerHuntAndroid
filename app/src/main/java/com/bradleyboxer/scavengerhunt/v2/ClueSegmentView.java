@@ -39,13 +39,13 @@ public class ClueSegmentView extends LinearLayout {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.view_clue_segment_creator, this);
+        inflate(getContext(), R.layout.v2_view_clue_segment_creator, this);
 
-        segmentNameField = (EditText) findViewById(R.id.clueNameView);
-        segmentLatitudeField = (EditText) findViewById(R.id.clueLatitudeView);
-        segmentLongitudeField = (EditText) findViewById(R.id.clueLongitudeView);
-        segmentRadiusField = (EditText) findViewById(R.id.clueRadiusView);
-        segmentClueTextField = (EditText) findViewById(R.id.clueTextView);
+        segmentNameField = (EditText) findViewById(R.id.v2_clueNameView);
+        segmentLatitudeField = (EditText) findViewById(R.id.v2_clueLatitudeView);
+        segmentLongitudeField = (EditText) findViewById(R.id.v2_clueLongitudeView);
+        segmentRadiusField = (EditText) findViewById(R.id.v2_clueRadiusView);
+        segmentClueTextField = (EditText) findViewById(R.id.v2_clueTextView);
 
         segmentNameField.setMaxWidth(segmentNameField.getWidth());
         segmentLatitudeField.setMaxWidth(segmentLatitudeField.getWidth());

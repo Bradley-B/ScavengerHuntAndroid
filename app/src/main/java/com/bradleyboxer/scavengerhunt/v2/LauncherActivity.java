@@ -29,10 +29,10 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launcher);
+        setContentView(R.layout.v2_activity_launcher);
 
-        startButton = findViewById(R.id.startButton);
-        shareButton = findViewById(R.id.shareButton);
+        startButton = findViewById(R.id.v2_startButton);
+        shareButton = findViewById(R.id.v2_shareButton);
 
         updateButtonStates(hasSavedHunt());
 

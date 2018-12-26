@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.v2_activity_main);
 
         Intent intent = getIntent();
 
@@ -56,19 +56,19 @@ public class MainActivity extends AppCompatActivity {
                 textToDisplay = clue.getLastSolvedCompassClueSegment().getClueText();
 
                 if(!unsolved) { //all compass clues in the chain have been solved
-                    findViewById(R.id.button).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.v2_button).setVisibility(View.INVISIBLE);
                 } else { //display button to next compass clue
-                    findViewById(R.id.button).setVisibility(View.VISIBLE);
+                    findViewById(R.id.v2_button).setVisibility(View.VISIBLE);
                 }
 
             } else if(clue.hasBeenDiscovered()) { //after geofence
                 textToDisplay = clue.getGeofenceDiscoveredText();
                 if(!clue.isSimpleClue()) {
-                    findViewById(R.id.button).setVisibility(View.VISIBLE);
+                    findViewById(R.id.v2_button).setVisibility(View.VISIBLE);
                 }
             }
 
-            ((TextView) findViewById(R.id.geofenceDisplay)).setText(textToDisplay);
+            ((TextView) findViewById(R.id.v2_geofenceDisplay)).setText(textToDisplay);
             triggeringClue = clue;
 
             Log.i("GEOFENCE STATUS", "opened notification for: " + clue.getGeofenceGeofenceData().getName());
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         //try {
         //    LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //    ((TextView) findViewById(R.id.testText)).setText("you are at ("+location.getLatitude()+", "+location.getLongitude()+") (accuracy: "+location.getAccuracy()+")");
+        //    ((TextView) findViewById(R.id.v2_testText)).setText("you are at ("+location.getLatitude()+", "+location.getLongitude()+") (accuracy: "+location.getAccuracy()+")");
         //} catch (SecurityException e) {e.printStackTrace();} catch (Exception ex) {}
     }
 
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                         // Failed to add geofences
                         Log.e("GEOFENCE STATUS", "Geofences not added ERROR");
                         Log.e("GEOFENCE STATUS", e.getMessage());
-                        ((TextView) findViewById(R.id.geofenceDisplay)).setText("Geofence error: "+e.getMessage());
+                        ((TextView) findViewById(R.id.v2_geofenceDisplay)).setText("Geofence error: "+e.getMessage());
                     }
                 });
         mGeofencingClient.removeGeofences(new ArrayList<String>() {

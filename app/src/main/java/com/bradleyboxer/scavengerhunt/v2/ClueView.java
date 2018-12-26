@@ -45,14 +45,14 @@ public class ClueView extends LinearLayout implements Serializable {
 
     private void init() {
         setOrientation(VERTICAL);
-        inflate(getContext(), R.layout.view_clue_creator, this);
+        inflate(getContext(), R.layout.v2_view_clue_creator, this);
 
-        textView = findViewById(R.id.clueSummaryView);
-        textView2 = findViewById(R.id.clueSummaryView2);
-        upButton = findViewById(R.id.clueUpButton);
-        downButton = findViewById(R.id.clueDownButton);
-        editButton = findViewById(R.id.clueEditButton);
-        deleteButton = findViewById(R.id.clueRemoveButton);
+        textView = findViewById(R.id.v2_clueSummaryView);
+        textView2 = findViewById(R.id.v2_clueSummaryView2);
+        upButton = findViewById(R.id.v2_clueUpButton);
+        downButton = findViewById(R.id.v2_clueDownButton);
+        editButton = findViewById(R.id.v2_clueEditButton);
+        deleteButton = findViewById(R.id.v2_clueRemoveButton);
     }
 
     public void updateText() {

@@ -24,14 +24,14 @@ public class ScavengerHuntCreatorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scavenger_hunt_creator);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.v2_activity_scavenger_hunt_creator);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.v2_toolbar);
         setSupportActionBar(toolbar);
 
-        clueDisplay = findViewById(R.id.clueViewContainer);
+        clueDisplay = findViewById(R.id.v2_clueViewContainer);
         clueViewList = new ArrayList<>();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.v2_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

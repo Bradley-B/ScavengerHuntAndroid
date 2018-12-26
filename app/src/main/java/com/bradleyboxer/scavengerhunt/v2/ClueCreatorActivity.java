@@ -27,10 +27,10 @@ public class ClueCreatorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clue_creator);
+        setContentView(R.layout.v2_activity_clue_creator);
 
-        geofenceSegment = (ClueSegmentView) findViewById(R.id.geofenceClueSegmentView);
-        scrollableClueSegments = (LinearLayout) findViewById(R.id.scrollableClueSegments);
+        geofenceSegment = (ClueSegmentView) findViewById(R.id.v2_geofenceClueSegmentView);
+        scrollableClueSegments = (LinearLayout) findViewById(R.id.v2_scrollableClueSegments);
         deleteButtons = new ArrayList<>();
         compassClueSegments = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class ClueCreatorActivity extends AppCompatActivity {
     }
 
     public void setGeofenceClueSegment(ClueSegment geofenceClueSegment) {
-        ((ClueSegmentView)findViewById(R.id.geofenceClueSegmentView)).setClueSegmentData(geofenceClueSegment);
+        ((ClueSegmentView)findViewById(R.id.v2_geofenceClueSegmentView)).setClueSegmentData(geofenceClueSegment);
     }
 
     public void newCompassClueSegment(ClueSegment clueSegment) {

@@ -19,9 +19,9 @@ public class ScavengerHuntRecieverActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scavenger_hunt_reciever);
+        setContentView(R.layout.v2_activity_scavenger_hunt_reciever);
 
-        enteredText = findViewById(R.id.serializedScavengerHunt);
+        enteredText = findViewById(R.id.v2_serializedScavengerHunt);
     }
 
     @Override
