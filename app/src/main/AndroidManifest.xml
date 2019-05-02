@@ -12,7 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".v3.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <service android:name=".v2.GeofenceTransitionsIntentService" />
+        <service android:name=".v3.GeofenceTransitionsIntentService" />
 
         <activity android:name=".v2.MainActivity" />
         <activity android:name=".v2.CompassActivity" />
@@ -25,7 +31,7 @@
         </activity>
         <activity android:name=".v2.ScavengerHuntCreatorActivity" />
         <activity android:name=".v2.ClueCreatorActivity" />
-        <activity android:name=".v2.ScavengerHuntRecieverActivity"></activity>
+        <activity android:name=".v2.ScavengerHuntRecieverActivity" />
     </application>
 
 </manifest>
