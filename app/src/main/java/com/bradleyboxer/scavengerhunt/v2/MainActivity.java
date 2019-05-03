@@ -137,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
                         ((TextView) findViewById(R.id.v2_geofenceDisplay)).setText("Geofence error: "+e.getMessage());
                     }
                 });
-        mGeofencingClient.removeGeofences(new ArrayList<String>() {
-        });
+        //mGeofencingClient.removeGeofences(new ArrayList<String>() {
+        //});
     }
 
     /**

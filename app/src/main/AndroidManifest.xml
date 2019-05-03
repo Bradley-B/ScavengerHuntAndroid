@@ -25,7 +25,8 @@
 
         <service android:name=".v3.GeofenceTransitionsIntentService" />
 
-        <activity android:name=".v2.MainActivity" />
+        <activity android:name=".v2.MainActivity">
+        </activity>
         <activity android:name=".v2.CompassActivity" />
         <activity android:name=".v2.LauncherActivity">
 

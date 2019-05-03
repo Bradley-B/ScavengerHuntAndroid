@@ -2,7 +2,11 @@ package com.bradleyboxer.scavengerhunt.v3;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,9 +40,38 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(final View view) {
+
+                final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                try {
+                    final LocationListener locationListener = new LocationListener() {
+                        int locationChecks = 0;
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            locationChecks++;
+                            if(location.getAccuracy()<60) {
+                                locationManager.removeUpdates(this);
+                                String loc = location.getLatitude() + ", " + location.getLongitude();
+                                Snackbar.make(view, "Location updated: " + loc, Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            } else if(locationChecks>10) {
+                                locationManager.removeUpdates(this);
+                                Snackbar.make(view, "Location failed to update.", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
+                        }
+                        @Override public void onStatusChanged(String s, int i, Bundle bundle) { }
+                        @Override public void onProviderEnabled(String s) { }
+                        @Override public void onProviderDisabled(String s) { }
+                    };
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
+
+                    Snackbar.make(view, "Updating location... please wait", Snackbar.LENGTH_INDEFINITE)
+                            .setAction("Action", null).show();
+
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -51,8 +84,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //float progress = createScavengerHunt().getProgressPercent();
-        float progress = 0.4f;
+        float progress = createScavengerHunt().getProgressPercent();
+        //float progress = 0.4f;
 
         //animate progress bar to current position
         ProgressBar progressBar = findViewById(R.id.progressBar);
