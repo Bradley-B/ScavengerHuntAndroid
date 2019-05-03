@@ -51,10 +51,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        float progress = createScavengerHunt().getProgressPercent();
+        //float progress = createScavengerHunt().getProgressPercent();
+        float progress = 0.4f;
 
         //animate progress bar to current position
-        ProgressBar progressBar = findViewById(R.id.huntProgressBar);
+        ProgressBar progressBar = findViewById(R.id.progressBar);
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, (int)(progress*1000));
         animation.setStartDelay(750);
         animation.setDuration(1000); // in milliseconds
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity
         });
         animation2.start();
         textView.invalidate();
-
 
     }
 
@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity
         location.setAccuracy(1000);
         Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
         clue.activate();
-        clue.solved();
 
         scavengerHunt.addClue(clue);
         return scavengerHunt;
