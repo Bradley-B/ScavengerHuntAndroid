@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -19,6 +18,7 @@ import com.bradleyboxer.scavengerhunt.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
+import java.util.Date;
 import java.util.List;
 
 public class GeofenceTransitionsIntentService extends IntentService {
@@ -51,24 +51,23 @@ public class GeofenceTransitionsIntentService extends IntentService {
             // Get the geofences that were triggered. A single event  can trigger
             // multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-            Geofence triggeringGeofence = triggeringGeofences.get(0); // get only one of the triggering geofences
 
-            // Get the transition details. Request id is the name of the geofence
-            String geofenceName = triggeringGeofence.getRequestId();
+            for(Geofence triggeringGeofence : triggeringGeofences) {
+                // Get the transition details. Request id is the name of the geofence
+                String geofenceName = triggeringGeofence.getRequestId();
 
-            // Send notification and log the transition details.
-            GeofenceClue discoveredClue = getTriggeredClue(geofencingEvent);
-            discoveredClue.setDiscovered();
+                // Send notification and log the transition details.
+                sendNotification(geofenceName);
+                Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
+            }
 
-            sendNotification(clue);
-            Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
         } else {
             // Log the error.
             Log.e("GEOFENCE STATUS", "invalid geofence transition type ERROR");
         }
     }
 
-    private void sendNotification(GeofenceClue clue) {
+    private void sendNotification(String clueName) {
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -88,8 +87,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
         //edit intent with the clue data
-        notificationIntent.putExtra("clue", clue);
-        Log.i("GEOFENCE STATUS", "sending notification for: "+clue.getGeofenceGeofenceData().getName());
+        notificationIntent.putExtra("clueName", clueName);
+        Log.i("GEOFENCE STATUS", "sending notification for: "+clueName);
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -112,7 +111,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setContentTitle("You've discovered: "+clue.getGeofenceGeofenceData().getName())
+                .setContentTitle("You've discovered: "+clueName)
                 .setContentText("Click here to read the clue!")
                 .setContentIntent(notificationPendingIntent);
 
@@ -125,7 +124,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
         builder.setAutoCancel(true);
 
         // Issue the notification
-        mNotificationManager.notify(0, builder.build());
+        int randomNumber = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        mNotificationManager.notify(randomNumber, builder.build());
     }
 
 }

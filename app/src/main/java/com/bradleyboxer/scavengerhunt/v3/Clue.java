@@ -9,10 +9,19 @@ public abstract class Clue {
 
     private String hintText;
     private String solvedText;
+    private String name;
+    private Type type;
 
-    public Clue(String hintText, String solvedText) {
+    boolean active = false;
+    boolean solved = false;
+
+    public enum Type {GEOFENCE, COMPASS}
+
+    public Clue(String name, String hintText, String solvedText, Type type) {
         this.hintText = hintText;
         this.solvedText = solvedText;
+        this.type = type;
+        this.name = name;
     }
 
     public String getHintText() {
@@ -23,4 +32,11 @@ public abstract class Clue {
         return solvedText;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

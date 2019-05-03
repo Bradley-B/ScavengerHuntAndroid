@@ -15,19 +15,20 @@
         <activity
             android:name=".v3.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-        <service android:name=".v2.GeofenceTransitionsIntentService" />
-        <service android:name=".v3.GeofenceTransitionsIntentService" />
-
-        <activity android:name=".v2.MainActivity" />
-        <activity android:name=".v2.CompassActivity" />
-        <activity android:name=".v2.LauncherActivity">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <service android:name=".v3.GeofenceTransitionsIntentService" />
+
+        <activity android:name=".v2.MainActivity" />
+        <activity android:name=".v2.CompassActivity" />
+        <activity android:name=".v2.LauncherActivity">
+
         </activity>
         <activity android:name=".v2.ScavengerHuntCreatorActivity" />
         <activity android:name=".v2.ClueCreatorActivity" />

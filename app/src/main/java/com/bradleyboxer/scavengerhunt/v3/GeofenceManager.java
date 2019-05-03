@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeofenceManager {
@@ -25,7 +26,13 @@ public class GeofenceManager {
     public GeofenceManager(Context context) {
         this.context = context;
     }
-    
+
+    public void addGeofence(Geofence geofence) {
+        List<Geofence> list = new ArrayList<>();
+        list.add(geofence);
+        addGeofences(list);
+    }
+
     public void addGeofences(List<Geofence> geofences) {
         try {
             GeofencingClient geofencingClient = LocationServices.getGeofencingClient(context);
