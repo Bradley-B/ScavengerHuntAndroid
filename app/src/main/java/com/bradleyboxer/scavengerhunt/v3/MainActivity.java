@@ -27,6 +27,8 @@ import android.widget.TextView;
 
 import com.bradleyboxer.scavengerhunt.R;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        final ScavengerHunt scavengerHunt = createScavengerHunt();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,14 +53,15 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onLocationChanged(Location location) {
                             locationChecks++;
-                            if(location.getAccuracy()<60) {
+                            if(location.getAccuracy()<100) {
                                 locationManager.removeUpdates(this);
+
                                 String loc = location.getLatitude() + ", " + location.getLongitude();
                                 Snackbar.make(view, "Location updated: " + loc, Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                             } else if(locationChecks>10) {
                                 locationManager.removeUpdates(this);
-                                Snackbar.make(view, "Location failed to update.", Snackbar.LENGTH_LONG)
+                                Snackbar.make(view, "GeoLocation failed to update.", Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                             }
                         }
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        float progress = createScavengerHunt().getProgressPercent();
+        float progress = scavengerHunt.getProgressPercent();
         //float progress = 0.4f;
 
         //animate progress bar to current position
@@ -176,14 +181,29 @@ public class MainActivity extends AppCompatActivity
 
         //geofence test
         GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
-        Location location = new Location("Bradley Boxer");
-        location.setLatitude(43.084970);
-        location.setLongitude(-77.667192);
-        location.setAccuracy(1000);
+        GeoLocation location = new GeoLocation(43.084970f, -77.667192f, 1000);
         Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
         clue.activate();
 
         scavengerHunt.addClue(clue);
         return scavengerHunt;
+    }
+
+    public boolean geofenceShouldTrigger(ScavengerHunt scavengerHunt, Location location) {
+        List<Clue> clueList = scavengerHunt.getClueList();
+        for(Clue clue : clueList) {
+            if(clue.getType().equals(Clue.Type.GEOFENCE)) {
+                GeofenceClue geoClue = (GeofenceClue) clue;
+                Location clueLoc = new Location("Bradley Boxer");
+                clueLoc.setLatitude(geoClue.getLocation().getLatitude());
+                clueLoc.setLongitude(geoClue.getLocation().getLongitude());
+                float dist = clueLoc.distanceTo(location);
+
+                if(clue.isActive() && dist < geoClue.getLocation().getRadius()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

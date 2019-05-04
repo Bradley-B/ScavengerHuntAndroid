@@ -1,26 +1,20 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
-import android.location.Location;
-import android.util.Log;
-
 import com.google.android.gms.location.Geofence;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GeofenceClue extends Clue {
 
     private boolean active;
-    private final Location location;
+    private final GeoLocation location;
     private final GeofenceManager geofenceManager;
 
-    public GeofenceClue(String name, String hintText, String solvedText, final Location location, final GeofenceManager geofenceManager) {
+    public GeofenceClue(String name, String hintText, String solvedText, final GeoLocation location, final GeofenceManager geofenceManager) {
         super(name, hintText, solvedText, Type.GEOFENCE);
         this.location = location;
         this.geofenceManager = geofenceManager;
     }
 
-    public Location getLocation() {
+    public GeoLocation getLocation() {
         return location;
     }
 
@@ -46,7 +40,7 @@ public class GeofenceClue extends Clue {
                 .setCircularRegion(
                         location.getLatitude(),
                         location.getLongitude(),
-                        location.getAccuracy()
+                        location.getRadius()
                 )
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
