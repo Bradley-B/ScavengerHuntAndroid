@@ -88,9 +88,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_progress);
 
-        float progress = scavengerHunt.getProgressPercent();
-        //float progress = 0.4f;
+        //float progress = scavengerHunt.getProgressPercent();
+        float progress = 0.4f;
 
         //animate progress bar to current position
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -157,17 +158,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        if (id == R.id.nav_progress) {
+            // Handle the progress action
+        } else if (id == R.id.nav_clues) {
 
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+
+        } else if (id == R.id.nav_answer_compass_clue) {
+
+        } else if (id == R.id.nav_answer_text_clue) {
 
         }
 

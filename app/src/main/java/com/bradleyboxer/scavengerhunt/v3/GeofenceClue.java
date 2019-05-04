@@ -4,7 +4,6 @@ import com.google.android.gms.location.Geofence;
 
 public class GeofenceClue extends Clue {
 
-    private boolean active;
     private final GeoLocation location;
     private final GeofenceManager geofenceManager;
 

@@ -15,7 +15,7 @@ public abstract class Clue {
     boolean active = false;
     boolean solved = false;
 
-    public enum Type {GEOFENCE, COMPASS}
+    public enum Type {GEOFENCE, COMPASS, WORD}
 
     public Clue(String name, String hintText, String solvedText, Type type) {
         this.hintText = hintText;
