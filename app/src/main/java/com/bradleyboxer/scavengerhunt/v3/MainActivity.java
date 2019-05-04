@@ -2,6 +2,7 @@ package com.bradleyboxer.scavengerhunt.v3;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("RestrictedApi")
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -161,7 +163,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_progress) {
             // Handle the progress action
         } else if (id == R.id.nav_clues) {
-
+            Intent intent = new Intent(this, ClueViewActivity.class);
+            startActivityForResult(intent, 0,null);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -175,6 +178,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_progress);
     }
 
     public ScavengerHunt createScavengerHunt() {
