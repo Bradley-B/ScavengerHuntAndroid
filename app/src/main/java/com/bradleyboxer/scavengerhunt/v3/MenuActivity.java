@@ -18,6 +18,8 @@ import com.bradleyboxer.scavengerhunt.R;
 
 public abstract class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private int checkedId;
+
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -35,6 +37,10 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    void setCheckedId(int id) {
+        this.checkedId = id;
+    }
+
     @SuppressLint("RestrictedApi")
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -42,12 +48,15 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(checkedId==id) {
+            return false;
+        }
+
+        Intent intent = null;
         if (id == R.id.nav_progress) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            intent = new Intent(this, MainActivity.class);
         } else if (id == R.id.nav_clues) {
-            Intent intent = new Intent(this, ClueViewActivity.class);
-            startActivity(intent);
+            intent = new Intent(this, ClueViewActivity.class);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -57,6 +66,13 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         } else if (id == R.id.nav_answer_text_clue) {
 
         }
+
+        if(intent==null) {
+            return false;
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

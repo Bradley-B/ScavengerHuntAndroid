@@ -79,6 +79,7 @@ public class MainActivity extends MenuActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_progress);
+        setCheckedId(R.id.nav_progress);
 
         //float progress = scavengerHunt.getProgressPercent();
         float progress = 0.4f;
