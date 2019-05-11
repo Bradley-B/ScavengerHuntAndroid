@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorGray">#F3F3F3</color>
     <color name="colorLocationBlue">#4B63E6</color>
+    <color name="clueStatusDone">#49E250</color>
+    <color name="clueStatusInactive">#F13D3D</color>
+    <color name="clueStatusActive">#F1E165</color>
 </resources>
