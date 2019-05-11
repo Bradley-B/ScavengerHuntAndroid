@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.media.Image;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -41,11 +42,18 @@ public class ClueIndividualView extends LinearLayout {
         clueName = (TextView) findViewById(R.id.clue_name);
 
         clueIcon.setImageDrawable(clue.getDrawableIcon(context));
-        clueIcon.setColorFilter(clue.getStatusColor());
+        clueIcon.setColorFilter(ContextCompat.getColor(context, clue.getStatusColor()));
         clueName.setText(clue.getName());
 
+        clueHintButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHint();
+            }
+        });
+
         clueSolveButton.setText(clue.isSolved() ? "View Solution Message" : "Solve");
-        clueSolveButton.setEnabled(clue.isSolved());
+        clueSolveButton.setEnabled(!clue.getType().equals(Clue.Type.GEOFENCE) || clue.isSolved());
         clueSolveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +64,16 @@ public class ClueIndividualView extends LinearLayout {
                 }
             }
         });
+    }
+
+    public void viewHint() {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+        dlgAlert.setMessage(clue.getHintText());
+        dlgAlert.setTitle("Hint Message");
+        dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+            @Override public void onClick(DialogInterface dialogInterface, int i) {}
+        });
+        dlgAlert.create().show();
     }
 
     public void viewSolution() {

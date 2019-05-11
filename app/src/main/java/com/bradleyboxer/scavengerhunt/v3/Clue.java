@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable;
 
 import com.bradleyboxer.scavengerhunt.R;
 
-public abstract class Clue {
+import java.io.Serializable;
+
+public abstract class Clue implements Serializable {
 
     abstract Drawable getDrawableIcon(Context context);
     abstract Class getActivityClass();

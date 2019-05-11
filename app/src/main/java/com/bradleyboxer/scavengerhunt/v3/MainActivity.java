@@ -150,6 +150,7 @@ public class MainActivity extends MenuActivity {
         clue.activate();
 
         scavengerHunt.addClue(clue);
+        FileUtil.saveScavengerHunt(scavengerHunt, this);
         return scavengerHunt;
     }
 

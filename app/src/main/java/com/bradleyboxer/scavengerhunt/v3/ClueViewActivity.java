@@ -33,6 +33,11 @@ public class ClueViewActivity extends MenuActivity {
         setCheckedId(R.id.nav_clues);
 
         LinearLayout frame = findViewById(R.id.clue_view_layout);
+        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+        for(Clue clue : scavengerHunt.getClueList()) {
+            ClueIndividualView clueView = new ClueIndividualView(this, clue);
+            frame.addView(clueView);
+        }
 
         super.onCreate(savedInstanceState);
     }

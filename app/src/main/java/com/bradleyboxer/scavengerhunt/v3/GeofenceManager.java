@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

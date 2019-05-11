@@ -2,6 +2,7 @@ package com.bradleyboxer.scavengerhunt.v3;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.bradleyboxer.scavengerhunt.R;
 import com.google.android.gms.location.Geofence;
@@ -9,9 +10,9 @@ import com.google.android.gms.location.Geofence;
 public class GeofenceClue extends Clue {
 
     private final GeoLocation location;
-    private final GeofenceManager geofenceManager;
+    private transient GeofenceManager geofenceManager;
 
-    public GeofenceClue(String name, String hintText, String solvedText, final GeoLocation location, final GeofenceManager geofenceManager) {
+    public GeofenceClue(String name, String hintText, String solvedText, final GeoLocation location, GeofenceManager geofenceManager) {
         super(name, hintText, solvedText, Type.GEOFENCE);
         this.location = location;
         this.geofenceManager = geofenceManager;
@@ -21,8 +22,18 @@ public class GeofenceClue extends Clue {
         return location;
     }
 
+    public void setGeofenceManager(GeofenceManager geofenceManager) {
+        this.geofenceManager = geofenceManager;
+    }
+
     @Override
     public void activate() {
+        if(geofenceManager==null) {
+            Log.e("GEOFENCE", "Cannot register geofences because the geofence manager is null." +
+                    " Did you load the scavenger hunt from a file? Use setGeofenceManager().");
+            throw new RuntimeException("Error registering geofences");
+        }
+
         super.activate();
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(getName())

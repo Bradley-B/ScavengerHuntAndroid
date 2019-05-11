@@ -1,6 +1,8 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
-public class GeoLocation {
+import java.io.Serializable;
+
+public class GeoLocation implements Serializable {
 
     private float longitude;
     private float latitude;
