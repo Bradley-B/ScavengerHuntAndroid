@@ -1,5 +1,9 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
+import com.bradleyboxer.scavengerhunt.R;
 import com.google.android.gms.location.Geofence;
 
 public class GeofenceClue extends Clue {
@@ -47,6 +51,11 @@ public class GeofenceClue extends Clue {
                 .build();
         geofenceManager.addGeofence(geofence);
         active = true;
+    }
+
+    @Override
+    public Drawable getDrawableIcon(Context context) {
+        return context.getResources().getDrawable(R.drawable.map_search, context.getTheme());
     }
 
 }

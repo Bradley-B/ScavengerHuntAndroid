@@ -1,7 +1,9 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
 import android.content.Context;
+import android.graphics.ColorFilter;
 import android.media.Image;
+import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,7 +20,12 @@ public class ClueIndividualView extends LinearLayout {
     private Button clueSolveButton;
     private TextView clueName;
 
-    public ClueIndividualView(Context context) {
+    @Deprecated
+    public ClueIndividualView(Context context, AttributeSet attrs) {
+        super(context, null, 0);
+    }
+
+    public ClueIndividualView(Context context, Clue clue) {
         super(context, null, 0);
 
         inflate(getContext(), R.layout.content_clue_individual_view, this);
@@ -27,6 +34,10 @@ public class ClueIndividualView extends LinearLayout {
         clueHintButton = (Button) findViewById(R.id.clue_hint_button);
         clueSolveButton = (Button) findViewById(R.id.clue_solve_button);
         clueName = (TextView) findViewById(R.id.clue_name);
+
+        clueIcon.setImageDrawable(clue.getDrawableIcon(context));
+        clueIcon.setColorFilter(clue.getStatusColor());
+        clueName.setText(clue.getName());
 
     }
 }
