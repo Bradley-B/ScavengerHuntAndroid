@@ -1,5 +1,6 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
@@ -53,11 +54,19 @@ public class ScavengerHunt implements Serializable {
         return null;
     }
 
-    public static ScavengerHunt deserialize(String serializedObject) throws Exception {
+    public static ScavengerHunt deserialize(String serializedObject, Context context) throws Exception {
         byte b[] = Base64.decode(serializedObject.getBytes(), Base64.DEFAULT);
         ByteArrayInputStream bi = new ByteArrayInputStream(b);
         ObjectInputStream si = new ObjectInputStream(bi);
         ScavengerHunt scavengerHunt = (ScavengerHunt) si.readObject();
+
+        GeofenceManager geofenceManager = new GeofenceManager(context);
+        for(Clue clue : scavengerHunt.getClueList()) {
+            if(clue.getType().equals(Clue.Type.GEOFENCE)) {
+                GeofenceClue geofenceClue = (GeofenceClue) clue;
+                geofenceClue.setGeofenceManager(geofenceManager);
+            }
+        }
         return scavengerHunt;
     }
 }

@@ -15,7 +15,7 @@ public class GeofenceClue extends Clue {
     public GeofenceClue(String name, String hintText, String solvedText, final GeoLocation location, GeofenceManager geofenceManager) {
         super(name, hintText, solvedText, Type.GEOFENCE);
         this.location = location;
-        this.geofenceManager = geofenceManager;
+        setGeofenceManager(geofenceManager);
     }
 
     public GeoLocation getLocation() {

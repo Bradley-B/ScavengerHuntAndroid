@@ -3,13 +3,10 @@ package com.bradleyboxer.scavengerhunt.v3;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 public class FileUtil {
 
@@ -34,6 +31,14 @@ public class FileUtil {
             ScavengerHunt scavengerHunt = (ScavengerHunt) is.readObject();
             is.close();
             fis.close();
+
+            GeofenceManager geofenceManager = new GeofenceManager(context);
+            for(Clue clue : scavengerHunt.getClueList()) {
+                if(clue.getType().equals(Clue.Type.GEOFENCE)) {
+                    GeofenceClue geofenceClue = (GeofenceClue) clue;
+                    geofenceClue.setGeofenceManager(geofenceManager);
+                }
+            }
             return scavengerHunt;
         } catch (Exception e) {
             Log.e("GEOFENCE UI", "Exception in loading scavenger hunt", e);
