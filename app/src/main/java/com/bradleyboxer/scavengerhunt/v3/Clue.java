@@ -1,5 +1,6 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
@@ -8,6 +9,7 @@ import com.bradleyboxer.scavengerhunt.R;
 public abstract class Clue {
 
     abstract Drawable getDrawableIcon(Context context);
+    abstract Class getActivityClass();
 
     private String hintText;
     private String solvedText;

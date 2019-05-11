@@ -43,4 +43,9 @@ public class GeofenceClue extends Clue {
         return context.getResources().getDrawable(R.drawable.map_search, context.getTheme());
     }
 
+    @Override
+    public Class getActivityClass() {
+        return null;
+    }
+
 }

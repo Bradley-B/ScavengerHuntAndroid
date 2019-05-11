@@ -32,18 +32,7 @@ public class ClueViewActivity extends MenuActivity {
         navigationView.setCheckedItem(R.id.nav_clues);
         setCheckedId(R.id.nav_clues);
 
-        ClueIndividualView clueView = new ClueIndividualView(this);
-        ClueIndividualView clueView2 = new ClueIndividualView(this);
-        ClueIndividualView clueView3 = new ClueIndividualView(this);
-        ClueIndividualView clueView4 = new ClueIndividualView(this);
-        ClueIndividualView clueView5 = new ClueIndividualView(this);
-
         LinearLayout frame = findViewById(R.id.clue_view_layout);
-        frame.addView(clueView);
-        frame.addView(clueView2);
-        frame.addView(clueView3);
-        frame.addView(clueView4);
-        frame.addView(clueView5);
 
         super.onCreate(savedInstanceState);
     }
