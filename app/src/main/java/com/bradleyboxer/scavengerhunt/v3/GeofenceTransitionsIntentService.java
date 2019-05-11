@@ -58,6 +58,15 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 // Get the transition details. Request id is the name of the geofence
                 String geofenceName = triggeringGeofence.getRequestId();
 
+                //mark the geofence as solved
+                ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+                for(Clue clue : scavengerHunt.getClueList()) {
+                    if(clue.getName().equals(geofenceName)) {
+                        clue.solved();
+                    }
+                }
+                FileUtil.saveScavengerHunt(scavengerHunt, this);
+
                 // Send notification and log the transition details.
                 sendNotification(geofenceName);
                 Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
@@ -86,7 +95,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
 
         // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent notificationIntent = new Intent(getApplicationContext(), ClueViewActivity.class);
 
         //edit intent with the clue data
         notificationIntent.putExtra("clueName", clueName);

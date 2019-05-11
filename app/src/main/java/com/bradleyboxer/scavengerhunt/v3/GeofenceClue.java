@@ -27,6 +27,12 @@ public class GeofenceClue extends Clue {
     }
 
     @Override
+    public void solved() {
+        super.solved();
+        geofenceManager.removeGeofence(getName());
+    }
+
+    @Override
     public void activate() {
         if(geofenceManager==null) {
             Log.e("GEOFENCE", "Cannot register geofences because the geofence manager is null." +

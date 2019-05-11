@@ -58,6 +58,29 @@ public class GeofenceManager {
         }
     }
 
+    public void removeGeofence(String requestId) {
+        List<String> list = new ArrayList<>();
+        list.add(requestId);
+        removeGeofences(list);
+    }
+
+    public void removeGeofences(List<String> requestIds) {
+        GeofencingClient geofencingClient = LocationServices.getGeofencingClient(context);
+        geofencingClient.removeGeofences(requestIds)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i("GEOFENCE STATUS", "Geofence(s) removed successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("GEOFENCE STATUS", "Geofence(s) failed to remove");
+                    }
+                });
+    }
+
     private GeofencingRequest getGeofencingRequest(List<Geofence> geofenceList) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);

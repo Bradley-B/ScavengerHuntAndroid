@@ -36,7 +36,7 @@ public class MainActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
-        final ScavengerHunt scavengerHunt = createScavengerHunt();
+        final ScavengerHunt scavengerHunt = getOrCreateScavengerHunt();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -140,17 +140,22 @@ public class MainActivity extends MenuActivity {
         navigationView.setCheckedItem(R.id.nav_progress);
     }
 
-    public ScavengerHunt createScavengerHunt() {
-        ScavengerHunt scavengerHunt = new ScavengerHunt();
+    public ScavengerHunt getOrCreateScavengerHunt() {
+        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
 
-        //geofence test
-        GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
-        GeoLocation location = new GeoLocation(43.084970f, -77.667192f, 1000);
-        Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
-        clue.activate();
+        if(scavengerHunt==null) {
+            scavengerHunt = new ScavengerHunt();
 
-        scavengerHunt.addClue(clue);
-        FileUtil.saveScavengerHunt(scavengerHunt, this);
+            //geofence test
+            GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
+            GeoLocation location = new GeoLocation(43.084970f, -77.667192f, 1000);
+            Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
+            clue.activate();
+
+            scavengerHunt.addClue(clue);
+            FileUtil.saveScavengerHunt(scavengerHunt, this);
+        }
+
         return scavengerHunt;
     }
 
