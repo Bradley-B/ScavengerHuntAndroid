@@ -22,22 +22,8 @@ public class GeofenceClue extends Clue {
     }
 
     @Override
-    boolean isSolved() {
-        return solved;
-    }
-
-    @Override
-    boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void solved() {
-        solved = true;
-    }
-
-    @Override
     public void activate() {
+        super.activate();
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(getName())
                 .setCircularRegion(
@@ -50,7 +36,6 @@ public class GeofenceClue extends Clue {
                 .setNotificationResponsiveness(0)
                 .build();
         geofenceManager.addGeofence(geofence);
-        active = true;
     }
 
     @Override
