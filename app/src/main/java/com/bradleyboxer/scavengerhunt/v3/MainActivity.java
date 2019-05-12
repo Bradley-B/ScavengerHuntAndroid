@@ -166,9 +166,15 @@ public class MainActivity extends MenuActivity {
 //        Clue clue3 = new GeofenceClue("Home Depot", "hintText", "solvedText", location3, geofenceManager);
 //        clue3.activate();
 
+        //compass test
+        GeoLocation location4 = new GeoLocation(40.590845f, -74.667190f, 20);
+        Clue clue4 = new CompassClue("Home Test 2", "hintText", "solvedText", location4);
+        clue4.activate();
+
 //        scavengerHunt.addClue(clue);
         scavengerHunt.addClue(clue2);
 //        scavengerHunt.addClue(clue3);
+        scavengerHunt.addClue(clue4);
 
         return scavengerHunt;
     }

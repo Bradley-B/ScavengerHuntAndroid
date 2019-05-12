@@ -41,6 +41,15 @@ public class ScavengerHunt implements Serializable {
         return numSolved/(float)clueList.size();
     }
 
+    public Clue getEarliestUnsolved(Clue.Type type) {
+        for(Clue clue : getClueList()) {
+            if(clue.getType().equals(type) && clue.isActive() && !clue.isSolved()) {
+                return clue;
+            }
+        }
+        return null;
+    }
+
     public void solveClue(String clueName) {
         for(Clue clue : getClueList()) {
             if(clue.getName().equals(clueName)) {

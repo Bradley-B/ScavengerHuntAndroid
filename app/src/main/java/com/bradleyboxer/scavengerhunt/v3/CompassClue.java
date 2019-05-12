@@ -21,8 +21,10 @@ public class CompassClue extends Clue {
     }
 
     @Override
-    public Class getActivityClass() {
-        return CompassActivity.class;
+    public void launchSolveActivity(Context context) {
+        Intent intent = new Intent(context, CompassActivity.class);
+        intent.putExtra("clue", this);
+        context.startActivity(intent);
     }
 
     public GeoLocation getLocation() {

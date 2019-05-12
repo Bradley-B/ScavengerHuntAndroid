@@ -27,6 +27,7 @@ public class CompassActivity extends MenuActivity {
     private int compassTouches = 0;
     private boolean locationLocked = false;
     private Clue clue;
+    private boolean solved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,9 @@ public class CompassActivity extends MenuActivity {
             }
         });
 
+        TextView title = (TextView) findViewById(R.id.compass_title);
+        title.setText("Currently Solving: " + clue.getName());
+
         compassTouches = 0;
         super.onCreate(savedInstanceState);
     }
@@ -87,12 +91,14 @@ public class CompassActivity extends MenuActivity {
 
     private void checkClueSolved(float distanceToTarget) {
         if((distanceToTarget<targetRadius && distanceToTarget>-1) || compassTouches>50) {
-
-            //solve clue
-            ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-            scavengerHunt.solveClue(clue.getName());
-            FileUtil.saveScavengerHunt(scavengerHunt, this);
-            Notifications.sendNotification(clue.getName(), this);
+            if(!solved) {
+                //solve clue
+                ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+                scavengerHunt.solveClue(clue.getName());
+                FileUtil.saveScavengerHunt(scavengerHunt, this);
+                Notifications.sendNotification(clue.getName(), this);
+                solved = true;
+            }
         }
     }
 
@@ -118,6 +124,7 @@ public class CompassActivity extends MenuActivity {
     protected void onStop() {
         super.onStop();
         compass.stop();
+        locationManager.removeUpdates(mListener);
     }
 
     private void setupCompass(double targetLat, double targetLong) {

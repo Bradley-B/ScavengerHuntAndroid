@@ -11,7 +11,6 @@ import java.io.Serializable;
 public abstract class Clue implements Serializable {
 
     abstract Drawable getDrawableIcon(Context context);
-    abstract Class getActivityClass();
 
     private String hintText;
     private String solvedText;
@@ -71,4 +70,7 @@ public abstract class Clue implements Serializable {
     public void solved() {
         state = State.SOLVED;
     }
+
+    public void launchSolveActivity(Context context) {}
+
 }

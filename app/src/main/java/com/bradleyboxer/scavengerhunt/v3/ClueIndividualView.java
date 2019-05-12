@@ -61,7 +61,7 @@ public class ClueIndividualView extends LinearLayout {
                 if(clue.isSolved()) {
                     viewSolution();
                 } else {
-                    launchSolveActivity();
+                    clue.launchSolveActivity(getContext());
                 }
             }
         });
@@ -87,8 +87,4 @@ public class ClueIndividualView extends LinearLayout {
         dlgAlert.create().show();
     }
 
-    public void launchSolveActivity() {
-        Intent intent = new Intent(getContext(), clue.getActivityClass());
-        getContext().startActivity(intent);
-    }
 }
