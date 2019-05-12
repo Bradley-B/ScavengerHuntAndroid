@@ -12,11 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".v3.CompassActivity"></activity>
         <activity
             android:name=".v3.ClueViewActivity"
             android:label="@string/title_activity_clue_view"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".v3.MainActivity"
             android:label="@string/title_activity_main"

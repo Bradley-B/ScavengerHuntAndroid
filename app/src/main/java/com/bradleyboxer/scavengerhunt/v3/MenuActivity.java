@@ -62,7 +62,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         } else if (id == R.id.nav_send) {
 
         } else if (id == R.id.nav_answer_compass_clue) {
-
+            intent = new Intent(this, CompassActivity.class);
         } else if (id == R.id.nav_answer_text_clue) {
 
         }

@@ -41,6 +41,14 @@ public class ScavengerHunt implements Serializable {
         return numSolved/(float)clueList.size();
     }
 
+    public void solveClue(String clueName) {
+        for(Clue clue : getClueList()) {
+            if(clue.getName().equals(clueName)) {
+                clue.solved();
+            }
+        }
+    }
+
     public static String serialize(ScavengerHunt scavengerHunt) {
         try {
             ByteArrayOutputStream bo = new ByteArrayOutputStream();

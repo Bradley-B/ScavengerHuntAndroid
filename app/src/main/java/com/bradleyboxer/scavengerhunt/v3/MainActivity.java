@@ -36,7 +36,11 @@ public class MainActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
-        final ScavengerHunt scavengerHunt = getOrCreateScavengerHunt();
+        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+        if(scavengerHunt==null) {
+            scavengerHunt = createScavengerHunt();
+            FileUtil.saveScavengerHunt(scavengerHunt, this);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +85,8 @@ public class MainActivity extends MenuActivity {
         navigationView.setCheckedItem(R.id.nav_progress);
         setCheckedId(R.id.nav_progress);
 
-        //float progress = scavengerHunt.getProgressPercent();
-        float progress = 0.4f;
+        float progress = scavengerHunt.getProgressPercent();
+        //float progress = 0.4f;
 
         //animate progress bar to current position
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -129,6 +133,9 @@ public class MainActivity extends MenuActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if(id == R.id.action_load_test) {
+            FileUtil.saveScavengerHunt(createScavengerHunt(), this);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -140,21 +147,28 @@ public class MainActivity extends MenuActivity {
         navigationView.setCheckedItem(R.id.nav_progress);
     }
 
-    public ScavengerHunt getOrCreateScavengerHunt() {
-        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+    public ScavengerHunt createScavengerHunt() {
+        ScavengerHunt scavengerHunt = new ScavengerHunt();
 
-        if(scavengerHunt==null) {
-            scavengerHunt = new ScavengerHunt();
+        //dorm test
+        GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
+//        GeoLocation location = new GeoLocation(43.084970f, -77.667192f, 1000);
+//        Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
+//        clue.activate();
 
-            //geofence test
-            GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
-            GeoLocation location = new GeoLocation(43.084970f, -77.667192f, 1000);
-            Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
-            clue.activate();
+        //home test
+        GeoLocation location2 = new GeoLocation(40.590845f, -74.667190f, 1000);
+        Clue clue2 = new GeofenceClue("Home Test", "hintText", "solvedText", location2, geofenceManager);
+        clue2.activate();
 
-            scavengerHunt.addClue(clue);
-            FileUtil.saveScavengerHunt(scavengerHunt, this);
-        }
+//        //home depot test
+//        GeoLocation location3 = new GeoLocation(40.575701f, -74.670116f, 1000);
+//        Clue clue3 = new GeofenceClue("Home Depot", "hintText", "solvedText", location3, geofenceManager);
+//        clue3.activate();
+
+//        scavengerHunt.addClue(clue);
+        scavengerHunt.addClue(clue2);
+//        scavengerHunt.addClue(clue3);
 
         return scavengerHunt;
     }

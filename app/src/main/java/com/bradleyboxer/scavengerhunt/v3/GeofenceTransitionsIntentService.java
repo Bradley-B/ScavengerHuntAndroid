@@ -60,15 +60,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
                 //mark the geofence as solved
                 ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-                for(Clue clue : scavengerHunt.getClueList()) {
-                    if(clue.getName().equals(geofenceName)) {
-                        clue.solved();
-                    }
-                }
+                scavengerHunt.solveClue(geofenceName);
                 FileUtil.saveScavengerHunt(scavengerHunt, this);
 
                 // Send notification and log the transition details.
-                sendNotification(geofenceName);
+                Notifications.sendNotification(geofenceName, this);
                 Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
             }
 
@@ -78,65 +74,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
     }
 
-    private void sendNotification(String clueName) {
-        // Get an instance of the Notification manager
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Android O requires a Notification Channel.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.app_name);
-            // Create the channel for the notification
-            NotificationChannel mChannel =
-                    new NotificationChannel("geofenceNotif", name, NotificationManager.IMPORTANCE_HIGH);
-
-            // Set the Notification Channel for the Notification Manager.
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-
-        // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), ClueViewActivity.class);
-
-        //edit intent with the clue data
-        notificationIntent.putExtra("clueName", clueName);
-        Log.i("GEOFENCE STATUS", "sending notification for: "+clueName);
-
-        // Construct a task stack.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-
-        // Add the main Activity to the task stack as the parent.
-        stackBuilder.addParentStack(MainActivity.class);
-
-        // Push the content Intent onto the stack.
-        stackBuilder.addNextIntent(notificationIntent);
-
-        // Get a PendingIntent containing the entire back stack.
-        PendingIntent notificationPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Get a notification builder that's compatible with platform versions >= 4
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "geofenceNotif");
-
-        // Define the notification settings.
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.ic_launcher))
-                .setColor(Color.RED)
-                .setContentTitle("You've discovered: "+clueName)
-                .setContentText("Click here to read the clue!")
-                .setContentIntent(notificationPendingIntent);
-
-        // Set the Channel ID for Android O.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId("geofenceNotif"); // Channel ID
-        }
-
-        // Dismiss notification once the user touches it.
-        builder.setAutoCancel(true);
-
-        // Issue the notification
-        int randomNumber = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        mNotificationManager.notify(randomNumber, builder.build());
-    }
 
 }

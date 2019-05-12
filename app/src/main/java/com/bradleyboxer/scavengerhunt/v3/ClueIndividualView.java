@@ -45,6 +45,7 @@ public class ClueIndividualView extends LinearLayout {
         clueIcon.setColorFilter(ContextCompat.getColor(context, clue.getStatusColor()));
         clueName.setText(clue.getName());
 
+        clueHintButton.setEnabled(clue.isActive() || clue.isSolved());
         clueHintButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
