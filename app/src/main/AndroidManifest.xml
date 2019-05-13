@@ -12,15 +12,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".v3.CompassActivity"></activity>
+
+        <activity android:name=".v3.CompassActivity"
+            android:label="@string/title_activity_solve_compass_clue"
+            android:theme="@style/AppTheme"></activity>
+
         <activity
             android:name=".v3.ClueViewActivity"
             android:label="@string/title_activity_clue_view"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme"></activity>
+
         <activity
             android:name=".v3.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,13 +34,6 @@
         </activity>
 
         <service android:name=".v3.GeofenceTransitionsIntentService" />
-
-        <activity android:name=".v2.MainActivity" />
-        <activity android:name=".v2.CompassActivity" />
-        <activity android:name=".v2.LauncherActivity" />
-        <activity android:name=".v2.ScavengerHuntCreatorActivity" />
-        <activity android:name=".v2.ClueCreatorActivity" />
-        <activity android:name=".v2.ScavengerHuntRecieverActivity" />
     </application>
 
 </manifest>
