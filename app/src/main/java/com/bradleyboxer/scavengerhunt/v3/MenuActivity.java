@@ -1,6 +1,8 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -61,10 +63,6 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         } else if (id == R.id.nav_answer_compass_clue) {
             ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
             Clue earliestUnsolved = scavengerHunt.getEarliestUnsolved(Clue.Type.COMPASS);
-
-            if(earliestUnsolved==null) {
-                return false;
-            }
 
             intent = new Intent(this, CompassActivity.class);
             intent.putExtra("clue", earliestUnsolved);

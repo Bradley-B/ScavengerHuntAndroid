@@ -36,6 +36,7 @@ public class CompassActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_compass);
         compassHands = (ImageView) findViewById(R.id.compass_hands);
+        compassHands.setVisibility(View.INVISIBLE);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_answer_compass_clue);
@@ -43,33 +44,40 @@ public class CompassActivity extends MenuActivity {
 
         Intent intent = getIntent();
         CompassClue clue = (CompassClue) intent.getSerializableExtra("clue");
-        double latit = clue.getLocation().getLatitude();
-        double longit = clue.getLocation().getLongitude();
-        targetRadius = clue.getLocation().getRadius();
-        this.clue = clue;
 
-        setupCompass(latit, longit);
+        if(clue!=null) {
+            double latit = clue.getLocation().getLatitude();
+            double longit = clue.getLocation().getLongitude();
+            targetRadius = clue.getLocation().getRadius();
+            this.clue = clue;
 
-        locationManager = getSystemService(LocationManager.class);
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mListener);
-        } catch (SecurityException e) {e.printStackTrace();}
+            setupCompass(latit, longit);
 
-        findViewById(R.id.compass_dial).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-                    compassTouches++;
-                    checkClueSolved(-1f);
+            locationManager = getSystemService(LocationManager.class);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mListener);
+            } catch (SecurityException e) {e.printStackTrace();}
+
+            findViewById(R.id.compass_dial).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                        compassTouches++;
+                        checkClueSolved(-1f);
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
 
-        TextView title = (TextView) findViewById(R.id.compass_title);
-        title.setText("Currently Solving: " + clue.getName());
+            TextView title = (TextView) findViewById(R.id.compass_title);
+            title.setText("Currently Solving: " + clue.getName());
 
-        compassTouches = 0;
+            compassTouches = 0;
+        } else {
+            TextView textView  = findViewById(R.id.compass_accuracy);
+            textView.setText("no active compass clues");
+        }
+
         super.onCreate(savedInstanceState);
     }
 
@@ -79,6 +87,7 @@ public class CompassActivity extends MenuActivity {
             if(location!=null) {
                 if(!locationLocked) {
                     findViewById(R.id.compass_hands).setVisibility(View.VISIBLE);
+                    compass.start();
                     locationLocked = true;
                 }
                 compass.updateLocation(location);
@@ -106,28 +115,12 @@ public class CompassActivity extends MenuActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        compass.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        compass.stop();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        compass.start();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-        compass.stop();
-        locationManager.removeUpdates(mListener);
+        if(compass!=null && locationManager!=null) {
+            compass.stop();
+            locationManager.removeUpdates(mListener);
+        }
     }
 
     private void setupCompass(double targetLat, double targetLong) {
