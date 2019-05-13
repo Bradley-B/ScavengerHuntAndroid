@@ -2,8 +2,6 @@ package com.bradleyboxer.scavengerhunt.v3;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,18 +9,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Property;
 import android.view.View;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,11 +23,13 @@ import java.util.List;
 
 public class MainActivity extends MenuActivity {
 
+    private ScavengerHunt scavengerHunt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
-        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+        scavengerHunt = FileUtil.loadScavengerHunt(this);
         if(scavengerHunt==null) {
             scavengerHunt = createScavengerHunt();
             FileUtil.saveScavengerHunt(scavengerHunt, this);
@@ -85,14 +78,19 @@ public class MainActivity extends MenuActivity {
         navigationView.setCheckedItem(R.id.nav_progress);
         setCheckedId(R.id.nav_progress);
 
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         float progress = scavengerHunt.getProgressPercent();
-        //float progress = 0.4f;
 
         //animate progress bar to current position
         ProgressBar progressBar = findViewById(R.id.progressBar);
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, (int)(progress*1000));
-        animation.setStartDelay(750);
-        animation.setDuration(1000); // in milliseconds
+        animation.setStartDelay(500);
+        animation.setDuration(1250); // in milliseconds
         animation.setInterpolator(new DecelerateInterpolator(1f));
         animation.start();
         progressBar.invalidate();
@@ -100,8 +98,8 @@ public class MainActivity extends MenuActivity {
         //animate progress integer
         final TextView textView = findViewById(R.id.progressBarText);
         ValueAnimator animation2 = ValueAnimator.ofInt(0, (int)(progress*100));
-        animation2.setStartDelay(750);
-        animation2.setDuration(1000); // in milliseconds
+        animation2.setStartDelay(500);
+        animation2.setDuration(1250); // in milliseconds
         animation2.setInterpolator(new DecelerateInterpolator(1f));
         animation2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -112,8 +110,6 @@ public class MainActivity extends MenuActivity {
         });
         animation2.start();
         textView.invalidate();
-
-        super.onCreate(savedInstanceState);
     }
 
     @Override
