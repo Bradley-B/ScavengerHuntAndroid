@@ -67,7 +67,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
             intent = new Intent(this, CompassActivity.class);
             intent.putExtra("clue", earliestUnsolved);
         } else if (id == R.id.nav_answer_text_clue) {
-
+            intent = new Intent(this, TextInputActivity.class);
         }
 
         if(intent==null) {
