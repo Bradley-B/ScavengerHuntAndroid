@@ -59,6 +59,22 @@ public class ScavengerHunt implements Serializable {
         return null;
     }
 
+    public int[] getClueStates() {
+        int inactive = 0;
+        int active = 0;
+        int solved = 0;
+        for(Clue clue : getClueList()) {
+            if(clue.isSolved()) {
+                solved++;
+            } else if(clue.isActive()) {
+                active++;
+            } else {
+                inactive++;
+            }
+        }
+        return new int[] {inactive, active, solved};
+    }
+
     public void solveClue(String clueName) {
         List<Clue> clueList = getClueList();
 

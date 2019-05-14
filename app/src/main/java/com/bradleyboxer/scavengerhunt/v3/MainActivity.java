@@ -9,6 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.view.Menu;
@@ -34,6 +36,24 @@ public class MainActivity extends MenuActivity {
             scavengerHunt = createScavengerHunt();
             FileUtil.saveScavengerHunt(scavengerHunt, this);
         }
+
+        int[] states = scavengerHunt.getClueStates();
+        TextView stateViewInactive = findViewById(R.id.clueStatus_inactive);
+        TextView stateViewActive = findViewById(R.id.clueStatus_active);
+        TextView stateViewSolved = findViewById(R.id.clueStatus_solved);
+        stateViewInactive.setText(Html.fromHtml("<b><big>"+states[0]+"</big></b>"+"<br><small><small>inactive</small></small>"));
+        stateViewActive.setText(Html.fromHtml("<b><big>"+states[1]+"</big></b>"+"<br><small><small>active</small></small>"));
+        stateViewSolved.setText(Html.fromHtml("<b><big>"+states[2]+"</big></b>"+"<br><small><small>solved</small></small>"));
+        View.OnClickListener stateViewTouchListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ClueViewActivity.class);
+                startActivity(intent);
+            }
+        };
+        stateViewInactive.setOnClickListener(stateViewTouchListener);
+        stateViewActive.setOnClickListener(stateViewTouchListener);
+        stateViewSolved.setOnClickListener(stateViewTouchListener);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
