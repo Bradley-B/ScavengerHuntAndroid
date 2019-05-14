@@ -62,8 +62,8 @@ public class Notifications {
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setContentTitle("You've discovered: "+clueName)
-                .setContentText("Click here to read the clue!")
+                .setContentTitle("You've solved: "+clueName)
+                .setContentText("Click here to see the next clue!")
                 .setContentIntent(notificationPendingIntent);
 
         // Set the Channel ID for Android O.

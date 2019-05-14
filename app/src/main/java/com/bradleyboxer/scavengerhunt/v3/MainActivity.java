@@ -155,7 +155,7 @@ public class MainActivity extends MenuActivity {
         //home test
         GeoLocation location2 = new GeoLocation(40.590845f, -74.667190f, 1000);
         Clue clue2 = new GeofenceClue("Home Test", "hintText", "solvedText", location2, geofenceManager);
-        clue2.activate();
+        //clue2.activate();
 
 //        //home depot test
 //        GeoLocation location3 = new GeoLocation(40.575701f, -74.670116f, 1000);

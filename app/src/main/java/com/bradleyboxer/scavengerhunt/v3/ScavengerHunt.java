@@ -50,10 +50,30 @@ public class ScavengerHunt implements Serializable {
         return null;
     }
 
-    public void solveClue(String clueName) {
+    public Clue getEarliestInactive() {
         for(Clue clue : getClueList()) {
+            if(!clue.isActive() && !clue.isSolved()) {
+                return clue;
+            }
+        }
+        return null;
+    }
+
+    public void solveClue(String clueName) {
+        List<Clue> clueList = getClueList();
+
+        for(int i=0;i<clueList.size();i++) {
+            Clue clue =  clueList.get(i);
             if(clue.getName().equals(clueName)) {
                 clue.solved();
+
+                //activate next clue
+                Clue nextClue = getEarliestInactive();
+                if(nextClue!=null) {
+                    nextClue.activate();
+                }
+
+                return; //stop looking for clues to mark solved, since we already did one
             }
         }
     }
