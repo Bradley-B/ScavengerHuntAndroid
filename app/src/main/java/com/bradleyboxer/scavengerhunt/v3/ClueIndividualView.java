@@ -26,6 +26,8 @@ public class ClueIndividualView extends LinearLayout {
     private Button clueSolveButton;
     private TextView clueName;
 
+    private int iconTouches = 0;
+
     @Deprecated
     public ClueIndividualView(Context context, AttributeSet attrs) {
         super(context, null, 0);
@@ -44,6 +46,18 @@ public class ClueIndividualView extends LinearLayout {
         clueIcon.setImageDrawable(clue.getDrawableIcon(context));
         clueIcon.setColorFilter(ContextCompat.getColor(context, clue.getStatusColor()));
         clueName.setText(clue.getName());
+        clueIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(iconTouches>50) {
+                    ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(getContext());
+                    scavengerHunt.solveClue(clue.getName());
+                    FileUtil.saveScavengerHunt(scavengerHunt, getContext());
+                    Notifications.sendNotification(clue.getName(), getContext());
+                }
+                iconTouches++;
+            }
+        });
 
         clueHintButton.setEnabled(clue.isActive() || clue.isSolved());
         clueHintButton.setOnClickListener(new OnClickListener() {

@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 
 public class FileUtil {
 
-    public static void saveScavengerHunt(ScavengerHunt scavengerHunt, Context context) {
+    public static synchronized void saveScavengerHunt(ScavengerHunt scavengerHunt, Context context) {
         try {
             Log.i("GEOFENCE UI", "saving scavenger hunt: "+scavengerHunt.getClueList().size());
             FileOutputStream fos = context.openFileOutput("savedScavengerHunt", Context.MODE_PRIVATE);
@@ -24,7 +24,7 @@ public class FileUtil {
         }
     }
 
-    public static ScavengerHunt loadScavengerHunt(Context context) {
+    public static synchronized ScavengerHunt loadScavengerHunt(Context context) {
         try {
             FileInputStream fis = context.openFileInput("savedScavengerHunt");
             ObjectInputStream is = new ObjectInputStream(fis);

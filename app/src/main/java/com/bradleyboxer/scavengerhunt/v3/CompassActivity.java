@@ -27,7 +27,6 @@ public class CompassActivity extends MenuActivity {
 
     private float currentAzimuth;
     private float targetRadius;
-    private int compassTouches = 0;
     private boolean locationLocked = false;
     private Clue clue;
     private boolean solved;
@@ -58,21 +57,8 @@ public class CompassActivity extends MenuActivity {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mListener);
             } catch (SecurityException e) {e.printStackTrace();}
 
-            findViewById(R.id.compass_dial).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-                        compassTouches++;
-                        checkClueSolved(-1f);
-                    }
-                    return true;
-                }
-            });
-
             TextView title = (TextView) findViewById(R.id.compass_title);
             title.setText("Currently Solving: " + clue.getName());
-
-            compassTouches = 0;
         } else {
             TextView textView  = findViewById(R.id.compass_accuracy);
             textView.setText("no active compass clues");
@@ -102,7 +88,7 @@ public class CompassActivity extends MenuActivity {
     };
 
     private void checkClueSolved(float distanceToTarget) {
-        if((distanceToTarget<targetRadius && distanceToTarget>-1) || compassTouches>50) {
+        if(distanceToTarget<targetRadius && distanceToTarget>-1) {
             if(!solved) {
                 //solve clue
                 ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);

@@ -151,6 +151,8 @@ public class MainActivity extends MenuActivity {
             return true;
         } else if(id == R.id.action_load_test) {
             FileUtil.saveScavengerHunt(createScavengerHunt(), this);
+            finish();
+            startActivity(getIntent());
             return true;
         }
 
