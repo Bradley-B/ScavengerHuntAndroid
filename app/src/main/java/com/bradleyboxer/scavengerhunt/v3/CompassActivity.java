@@ -37,10 +37,6 @@ public class CompassActivity extends MenuActivity {
         compassHands = (ImageView) findViewById(R.id.compass_hands);
         compassHands.setVisibility(View.INVISIBLE);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_answer_compass_clue);
-        setCheckedId(R.id.nav_answer_compass_clue);
-
         Intent intent = getIntent();
         CompassClue clue = (CompassClue) intent.getSerializableExtra("clue");
 
@@ -65,6 +61,7 @@ public class CompassActivity extends MenuActivity {
         }
 
         super.onCreate(savedInstanceState);
+        setCheckedId(R.id.nav_answer_compass_clue);
     }
 
     private LocationListener mListener = new LocationListener() {

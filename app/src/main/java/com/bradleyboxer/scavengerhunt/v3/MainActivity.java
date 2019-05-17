@@ -100,11 +100,8 @@ public class MainActivity extends MenuActivity {
             }
         });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_progress);
-        setCheckedId(R.id.nav_progress);
-
         super.onCreate(savedInstanceState);
+        setCheckedId(R.id.nav_progress);
     }
 
     @Override

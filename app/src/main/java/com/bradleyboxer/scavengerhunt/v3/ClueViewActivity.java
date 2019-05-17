@@ -26,10 +26,6 @@ public class ClueViewActivity extends MenuActivity {
             }
         });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_clues);
-        setCheckedId(R.id.nav_clues);
-
         LinearLayout frame = findViewById(R.id.clue_view_layout);
         ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
         for(Clue clue : scavengerHunt.getClueList()) {
@@ -38,6 +34,7 @@ public class ClueViewActivity extends MenuActivity {
         }
 
         super.onCreate(savedInstanceState);
+        setCheckedId(R.id.nav_clues);
     }
 
 

@@ -18,6 +18,7 @@ import com.bradleyboxer.scavengerhunt.R;
 public abstract class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private int checkedId;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -32,12 +33,13 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     void setCheckedId(int id) {
         this.checkedId = id;
+        navigationView.setCheckedItem(checkedId);
     }
 
     @SuppressLint("RestrictedApi")
@@ -82,6 +84,12 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationView.setCheckedItem(checkedId);
     }
 
     @Override
