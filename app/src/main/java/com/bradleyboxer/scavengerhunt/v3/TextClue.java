@@ -16,12 +16,12 @@ public class TextClue extends Clue {
     }
 
     public boolean shouldBeSolved(String proposedSolution) {
-        return proposedSolution.equals(solution);
+        return proposedSolution.toLowerCase().trim().equals(solution.toLowerCase().trim());
     }
 
     @Override
     public Drawable getDrawableIcon(Context context) {
-        return context.getResources().getDrawable(R.drawable.ic_menu_pencil, context.getTheme());
+        return context.getResources().getDrawable(R.drawable.ic_menu_pen, context.getTheme());
     }
 
     @Override

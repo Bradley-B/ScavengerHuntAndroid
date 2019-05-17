@@ -14,7 +14,7 @@
             android:title="View Clues" />
         <item
             android:id="@+id/nav_answer_text_clue"
-            android:icon="@drawable/ic_menu_pencil"
+            android:icon="@drawable/ic_menu_pen"
             android:title="Solve Text Clue" />
         <item
             android:id="@+id/nav_answer_compass_clue"

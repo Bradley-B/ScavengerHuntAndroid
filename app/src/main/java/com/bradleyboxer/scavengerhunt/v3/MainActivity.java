@@ -170,16 +170,12 @@ public class MainActivity extends MenuActivity {
     public ScavengerHunt createScavengerHunt() {
         ScavengerHunt scavengerHunt = new ScavengerHunt();
 
-        //dorm test
         GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
-//        GeoLocation location = new GeoLocation(43.084970f, -77.667192f, 1000);
-//        Clue clue = new GeofenceClue("Dorm Test", "hintText", "solvedText", location, geofenceManager);
-//        clue.activate();
 
         //home test
         GeoLocation location2 = new GeoLocation(40.590845f, -74.667190f, 1000);
         Clue clue2 = new GeofenceClue("Home Test", "hintText", "solvedText", location2, geofenceManager);
-        //clue2.activate();
+        clue2.activate();
 
 //        //home depot test
 //        GeoLocation location3 = new GeoLocation(40.575701f, -74.670116f, 1000);
@@ -189,12 +185,15 @@ public class MainActivity extends MenuActivity {
         //compass test
         GeoLocation location4 = new GeoLocation(40.590845f, -74.667190f, 20);
         Clue clue4 = new CompassClue("Home Test 2", "hintText", "solvedText", location4);
-        clue4.activate();
+        //clue4.activate();
 
-//        scavengerHunt.addClue(clue);
+        //text input test
+        Clue clue5 = new TextClue("Text Input Test", "hintText", "solvedText", "home");
+
         scavengerHunt.addClue(clue2);
 //        scavengerHunt.addClue(clue3);
         scavengerHunt.addClue(clue4);
+        scavengerHunt.addClue(clue5);
 
         return scavengerHunt;
     }

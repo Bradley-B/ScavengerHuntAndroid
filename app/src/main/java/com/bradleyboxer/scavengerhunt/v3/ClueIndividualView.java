@@ -68,7 +68,7 @@ public class ClueIndividualView extends LinearLayout {
         });
 
         clueSolveButton.setText(clue.isSolved() ? "View Solution Message" : "Solve");
-        clueSolveButton.setEnabled(!clue.getType().equals(Clue.Type.GEOFENCE) || clue.isSolved());
+        clueSolveButton.setEnabled(clue.isSolved() || (clue.isActive() && !clue.getType().equals(Clue.Type.GEOFENCE)));
         clueSolveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
