@@ -2,6 +2,7 @@ package com.bradleyboxer.scavengerhunt.v3;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.util.Log;
 
 import com.bradleyboxer.scavengerhunt.R;
@@ -24,6 +25,15 @@ public class GeofenceClue extends Clue {
 
     public void setGeofenceManager(GeofenceManager geofenceManager) {
         this.geofenceManager = geofenceManager;
+    }
+
+    public boolean shouldBeSolved(Location location) {
+        Location clueLoc = new Location("Bradley Boxer");
+        clueLoc.setLatitude(getLocation().getLatitude());
+        clueLoc.setLongitude(getLocation().getLongitude());
+        float dist = clueLoc.distanceTo(location);
+
+        return isActive() && dist < getLocation().getRadius();
     }
 
     @Override

@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.bradleyboxer.scavengerhunt.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends MenuActivity {
@@ -69,6 +70,11 @@ public class MainActivity extends MenuActivity {
                             locationChecks++;
                             if(location.getAccuracy()<100) {
                                 locationManager.removeUpdates(this);
+
+                                boolean changed = forceSolveGeofenceClues(location);
+                                if(changed) {
+                                    reloadActivity();
+                                }
 
                                 String loc = location.getLatitude() + ", " + location.getLongitude();
                                 Snackbar.make(view, "Location updated: " + loc, Snackbar.LENGTH_LONG)
@@ -151,8 +157,7 @@ public class MainActivity extends MenuActivity {
             return true;
         } else if(id == R.id.action_load_test) {
             FileUtil.saveScavengerHunt(createScavengerHunt(), this);
-            finish();
-            startActivity(getIntent());
+            reloadActivity();
             return true;
         }
 
@@ -197,21 +202,28 @@ public class MainActivity extends MenuActivity {
         return scavengerHunt;
     }
 
-    public boolean geofenceShouldTrigger(ScavengerHunt scavengerHunt, Location location) {
+    public void reloadActivity() {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
+
+    public boolean forceSolveGeofenceClues(Location location) {
+        boolean atLeastOneSolved = false;
         List<Clue> clueList = scavengerHunt.getClueList();
         for(Clue clue : clueList) {
             if(clue.getType().equals(Clue.Type.GEOFENCE)) {
-                GeofenceClue geoClue = (GeofenceClue) clue;
-                Location clueLoc = new Location("Bradley Boxer");
-                clueLoc.setLatitude(geoClue.getLocation().getLatitude());
-                clueLoc.setLongitude(geoClue.getLocation().getLongitude());
-                float dist = clueLoc.distanceTo(location);
-
-                if(clue.isActive() && dist < geoClue.getLocation().getRadius()) {
-                    return true;
+                GeofenceClue geofenceClue = (GeofenceClue) clue;
+                boolean shouldBeSolved = geofenceClue.shouldBeSolved(location);
+                if(shouldBeSolved) {
+                    scavengerHunt.solveClue(clue.getName());
+                    FileUtil.saveScavengerHunt(scavengerHunt, this);
+                    Notifications.sendNotification(clue.getName(), this);
+                    atLeastOneSolved = true;
                 }
             }
         }
-        return false;
+        return atLeastOneSolved;
     }
 }

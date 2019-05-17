@@ -18,7 +18,15 @@ import java.util.Date;
 
 public class Notifications {
 
-    public static void sendNotification(String clueName, Context context) {
+    private static long lastNotificationTimestamp = 0;
+
+    public synchronized static void sendNotification(String clueName, Context context) {
+
+        if(System.currentTimeMillis()-lastNotificationTimestamp<1000) {
+            return;
+        }
+        lastNotificationTimestamp = System.currentTimeMillis();
+
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
