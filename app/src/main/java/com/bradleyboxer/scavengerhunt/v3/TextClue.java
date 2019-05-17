@@ -15,6 +15,10 @@ public class TextClue extends Clue {
         this.solution = solution;
     }
 
+    public boolean shouldBeSolved(String proposedSolution) {
+        return proposedSolution.equals(solution);
+    }
+
     @Override
     public Drawable getDrawableIcon(Context context) {
         return context.getResources().getDrawable(R.drawable.ic_menu_pencil, context.getTheme());
@@ -22,9 +26,8 @@ public class TextClue extends Clue {
 
     @Override
     public void launchSolveActivity(Context context) {
-//        Intent intent = new Intent(context, CompassActivity.class);
-//        intent.putExtra("clue", this);
-//        context.startActivity(intent);
+        Intent intent = new Intent(context, TextInputActivity.class);
+        context.startActivity(intent);
     }
 
 }

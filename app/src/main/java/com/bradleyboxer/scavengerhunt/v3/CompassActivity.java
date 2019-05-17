@@ -26,9 +26,8 @@ public class CompassActivity extends MenuActivity {
     private ImageView compassHands;
 
     private float currentAzimuth;
-    private float targetRadius;
     private boolean locationLocked = false;
-    private Clue clue;
+    private CompassClue clue;
     private boolean solved;
 
     @Override
@@ -43,9 +42,7 @@ public class CompassActivity extends MenuActivity {
         if(clue!=null) {
             double latit = clue.getLocation().getLatitude();
             double longit = clue.getLocation().getLongitude();
-            targetRadius = clue.getLocation().getRadius();
             this.clue = clue;
-
             setupCompass(latit, longit);
 
             locationManager = getSystemService(LocationManager.class);
@@ -85,15 +82,13 @@ public class CompassActivity extends MenuActivity {
     };
 
     private void checkClueSolved(float distanceToTarget) {
-        if(distanceToTarget<targetRadius && distanceToTarget>-1) {
-            if(!solved) {
-                //solve clue
-                ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-                scavengerHunt.solveClue(clue.getName());
-                FileUtil.saveScavengerHunt(scavengerHunt, this);
-                Notifications.sendNotification(clue.getName(), this);
-                solved = true;
-            }
+        if(clue.shouldBeSolved(distanceToTarget) && !solved) {
+            //solve clue
+            ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+            scavengerHunt.solveClue(clue.getName());
+            FileUtil.saveScavengerHunt(scavengerHunt, this);
+            Notifications.sendNotification(clue.getName(), this);
+            solved = true;
         }
     }
 

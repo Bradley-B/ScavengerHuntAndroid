@@ -3,6 +3,7 @@ package com.bradleyboxer.scavengerhunt.v3;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 
 import com.bradleyboxer.scavengerhunt.R;
 
@@ -13,6 +14,10 @@ public class CompassClue extends Clue {
     public CompassClue(String name, String hintText, String solvedText, GeoLocation location) {
         super(name, hintText, solvedText, Type.COMPASS);
         this.location = location;
+    }
+
+    public boolean shouldBeSolved(float distanceToTarget) {
+        return distanceToTarget<=location.getRadius();
     }
 
     @Override
