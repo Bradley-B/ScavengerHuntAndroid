@@ -15,9 +15,15 @@ import java.util.List;
 public class ScavengerHunt implements Serializable {
 
     private ArrayList<Clue> clueList;
+    private boolean inactiveCluesDisplayed;
 
-    public ScavengerHunt() {
+    public ScavengerHunt(boolean displayInactiveClues) {
         clueList = new ArrayList<>();
+        this.inactiveCluesDisplayed = displayInactiveClues;
+    }
+
+    public boolean areInactiveCluesDisplayed() {
+        return inactiveCluesDisplayed;
     }
 
     public void addClue(Clue clue) {

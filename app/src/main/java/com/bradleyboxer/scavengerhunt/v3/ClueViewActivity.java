@@ -1,5 +1,8 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,16 +24,32 @@ public class ClueViewActivity extends MenuActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Well, this is embarrassing... this feature is not yet implemented", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Well, this is embarrassing... this feature is not yet implemented", Snackbar.LENGTH_LONG) //TODO
                         .setAction("Action", null).show();
             }
         });
 
+        Intent triggeringIntent = getIntent();
+        String triggeringClueName = triggeringIntent.getStringExtra("clueName");
+
         LinearLayout frame = findViewById(R.id.clue_view_layout);
         ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+        boolean displayInactiveClues = scavengerHunt.areInactiveCluesDisplayed();
         for(Clue clue : scavengerHunt.getClueList()) {
-            ClueIndividualView clueView = new ClueIndividualView(this, clue);
-            frame.addView(clueView);
+            if(displayInactiveClues || clue.isActive() || clue.isSolved()) {
+                ClueIndividualView clueView = new ClueIndividualView(this, clue);
+                frame.addView(clueView);
+
+                if(clue.getName().equals(triggeringClueName)) {
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+                    dlgAlert.setMessage(clue.getSolvedText());
+                    dlgAlert.setTitle("Solution Message");
+                    dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialogInterface, int i) {}
+                    });
+                    dlgAlert.create().show();
+                }
+            }
         }
 
         super.onCreate(savedInstanceState);

@@ -34,7 +34,7 @@ public class MainActivity extends MenuActivity {
 
         scavengerHunt = FileUtil.loadScavengerHunt(this);
         if(scavengerHunt==null) {
-            scavengerHunt = createScavengerHunt();
+            scavengerHunt = Assembly.assembleMorganScavengerHunt(this);
             FileUtil.saveScavengerHunt(scavengerHunt, this);
         }
 
@@ -153,7 +153,7 @@ public class MainActivity extends MenuActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if(id == R.id.action_load_test) {
-            FileUtil.saveScavengerHunt(createScavengerHunt(), this);
+            FileUtil.saveScavengerHunt(Assembly.assembleTestScavengerHunt(this), this);
             reloadActivity();
             return true;
         }
@@ -165,37 +165,6 @@ public class MainActivity extends MenuActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_progress);
-    }
-
-    public ScavengerHunt createScavengerHunt() {
-        ScavengerHunt scavengerHunt = new ScavengerHunt();
-
-        GeofenceManager geofenceManager = new GeofenceManager(getApplicationContext());
-
-        //home test
-        GeoLocation location2 = new GeoLocation(40.590845f, -74.667190f, 1000);
-        Clue clue2 = new GeofenceClue("Home Test", "hintText", "solvedText", location2, geofenceManager);
-        clue2.activate();
-
-//        //home depot test
-//        GeoLocation location3 = new GeoLocation(40.575701f, -74.670116f, 1000);
-//        Clue clue3 = new GeofenceClue("Home Depot", "hintText", "solvedText", location3, geofenceManager);
-//        clue3.activate();
-
-        //compass test
-        GeoLocation location4 = new GeoLocation(40.590845f, -74.667190f, 20);
-        Clue clue4 = new CompassClue("Home Test 2", "hintText", "solvedText", location4);
-        //clue4.activate();
-
-        //text input test
-        Clue clue5 = new TextClue("Text Input Test", "hintText", "solvedText", "home");
-
-        scavengerHunt.addClue(clue2);
-//        scavengerHunt.addClue(clue3);
-        scavengerHunt.addClue(clue4);
-        scavengerHunt.addClue(clue5);
-
-        return scavengerHunt;
     }
 
     public void reloadActivity() {
