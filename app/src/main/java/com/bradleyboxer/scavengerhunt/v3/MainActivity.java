@@ -153,7 +153,7 @@ public class MainActivity extends MenuActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if(id == R.id.action_load_test) {
-            FileUtil.saveScavengerHunt(Assembly.assembleTestScavengerHunt(this), this);
+            FileUtil.saveScavengerHunt(Assembly.assembleMorganScavengerHunt(this), this);
             reloadActivity();
             return true;
         }
