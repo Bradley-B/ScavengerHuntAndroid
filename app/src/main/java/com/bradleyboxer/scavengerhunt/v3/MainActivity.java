@@ -1,8 +1,10 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,11 +28,16 @@ import java.util.List;
 
 public class MainActivity extends MenuActivity {
 
+    public static final int LOCATION_REQUEST_ID = 1;
     private ScavengerHunt scavengerHunt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_ID);
+        }
 
         scavengerHunt = FileUtil.loadScavengerHunt(this);
         if(scavengerHunt==null) {
@@ -159,6 +166,16 @@ public class MainActivity extends MenuActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode == LOCATION_REQUEST_ID) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                 throw new RuntimeException();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
