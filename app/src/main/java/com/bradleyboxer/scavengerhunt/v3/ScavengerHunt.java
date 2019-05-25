@@ -56,15 +56,6 @@ public class ScavengerHunt implements Serializable {
         return null;
     }
 
-    public Clue getEarliestInactive() {
-        for(Clue clue : getClueList()) {
-            if(!clue.isActive() && !clue.isSolved()) {
-                return clue;
-            }
-        }
-        return null;
-    }
-
     public int[] getClueStates() {
         int inactive = 0;
         int active = 0;
@@ -81,22 +72,24 @@ public class ScavengerHunt implements Serializable {
         return new int[] {inactive, active, solved};
     }
 
-    public void solveClue(String clueName) {
-        List<Clue> clueList = getClueList();
-
-        for(int i=0;i<clueList.size();i++) {
-            Clue clue =  clueList.get(i);
-            if(clue.getName().equals(clueName)) {
-                clue.solved();
-
-                //activate next clue
-                Clue nextClue = getEarliestInactive();
-                if(nextClue!=null) {
-                    nextClue.activate();
-                }
-
-                return; //stop looking for clues to mark solved, since we already did one
+    public Clue getClue(String clueName) {
+        for(Clue c : getClueList()) {
+            if(clueName.equals(c.getName())) {
+                return c;
             }
+        }
+        return null;
+    }
+
+    public void solveClue(String clueName) {
+        Clue clue = getClue(clueName);
+        clue.solved();
+
+        //activate next clue
+        List<String> clueChildrenNames = clue.getChildren();
+        for(String name : clueChildrenNames) {
+            Clue child = getClue(name);
+            child.activate();
         }
     }
 

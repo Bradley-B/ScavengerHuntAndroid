@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import com.bradleyboxer.scavengerhunt.R;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Clue implements Serializable {
 
@@ -18,6 +20,8 @@ public abstract class Clue implements Serializable {
     private Type type;
     private State state;
 
+    private final List<String> activationList;
+
     public enum Type {GEOFENCE, COMPASS, TEXT} //TODO remove type attribute and move functionality into subclasses
     public enum State {INACTIVE, ACTIVE, SOLVED}
 
@@ -26,6 +30,7 @@ public abstract class Clue implements Serializable {
         this.solvedText = solvedText;
         this.type = type;
         this.name = name;
+        this.activationList = new ArrayList<>();
         state = State.INACTIVE;
     }
 
@@ -37,6 +42,14 @@ public abstract class Clue implements Serializable {
         } else {
             return R.color.clueStatusInactive;
         }
+    }
+
+    public void addChild(String childName) {
+        activationList.add(childName);
+    }
+
+    public List<String> getChildren() {
+        return activationList;
     }
 
     public String getHintText() {
@@ -72,5 +85,15 @@ public abstract class Clue implements Serializable {
     }
 
     public void launchSolveActivity(Context context) {}
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this) return true;
+        if(!(o instanceof Clue)) return false;
+
+        Clue other = (Clue) o;
+        return getType().equals(other.getType()) && getName().equals(other.getName()) &&
+                getHintText().equals(other.getHintText()) && getSolvedText().equals(other.getSolvedText());
+    }
 
 }
