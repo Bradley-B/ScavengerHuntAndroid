@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/clue_view_icon"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="110dp"
             android:layout_gravity="left"
             android:layout_weight="0"
             android:src="@drawable/map_search"

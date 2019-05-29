@@ -36,6 +36,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:tint="@color/colorLocationBlue"
+            android:visibility="gone"
             app:backgroundTint="@color/colorGray"
             app:srcCompat="@android:drawable/ic_input_add" />
 
