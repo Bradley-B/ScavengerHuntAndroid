@@ -1,0 +1,12 @@
+<resources>
+    <string name="title_activity_main">Scavenger Hunt</string>
+    <string name="app_name">Scavenger Hunt</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Scavenger Hunt</string>
+    <string name="nav_header_subtitle">by Bradley Boxer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_clue_view">Clues</string>
+    <string name="title_activity_solve_compass_clue">Compass</string>
+</resources>
