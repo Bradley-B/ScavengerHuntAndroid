@@ -14,6 +14,10 @@ import android.widget.ScrollView;
 
 import com.bradleyboxer.scavengerhunt.R;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ClueViewActivity extends MenuActivity {
 
     @Override
@@ -35,7 +39,11 @@ public class ClueViewActivity extends MenuActivity {
         LinearLayout frame = findViewById(R.id.clue_view_layout);
         ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
         boolean displayInactiveClues = scavengerHunt.areInactiveCluesDisplayed();
-        for(Clue clue : scavengerHunt.getClueList()) {
+
+        List<Clue> reversedList = new ArrayList<>(scavengerHunt.getClueList());
+        Collections.reverse(reversedList);
+
+        for(Clue clue : reversedList) {
             if(displayInactiveClues || clue.isActive() || clue.isSolved()) {
                 ClueIndividualView clueView = new ClueIndividualView(this, clue);
                 frame.addView(clueView);
