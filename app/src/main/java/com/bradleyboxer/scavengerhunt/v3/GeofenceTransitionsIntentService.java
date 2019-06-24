@@ -1,24 +1,12 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
-import com.bradleyboxer.scavengerhunt.R;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.Date;
 import java.util.List;
 
 public class GeofenceTransitionsIntentService extends IntentService {

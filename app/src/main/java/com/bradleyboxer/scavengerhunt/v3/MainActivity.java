@@ -9,12 +9,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Html;
-import android.view.MotionEvent;
 import android.view.View;
-import android.support.design.widget.NavigationView;
+import com.google.android.material.navigation.NavigationView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.DecelerateInterpolator;
@@ -23,7 +22,6 @@ import android.widget.TextView;
 
 import com.bradleyboxer.scavengerhunt.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends MenuActivity {

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "792938129954",
+    "firebase_url": "https://scavengerhunt-36919.firebaseio.com",
+    "project_id": "scavengerhunt-36919",
+    "storage_bucket": "scavengerhunt-36919.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792938129954:android:6009c5173c3f7e66",
+        "android_client_info": {
+          "package_name": "com.bradleyboxer.scavengerhunt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "792938129954-739b3hekj5lqpmkmmjlja3g0lfk29mbo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNQcBXUCHiilVsQx-qtlmxSVKhh-VlqqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "792938129954-739b3hekj5lqpmkmmjlja3g0lfk29mbo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
