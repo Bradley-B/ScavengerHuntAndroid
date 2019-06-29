@@ -36,4 +36,9 @@ public class CompassClue extends Clue {
         return location;
     }
 
+    @Override
+    public Clue deepCopy() {
+        return new CompassClue(getName(), getHintText(), getSolvedText(), location.deepCopy());
+    }
+
 }

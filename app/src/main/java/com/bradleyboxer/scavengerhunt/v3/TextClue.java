@@ -30,4 +30,9 @@ public class TextClue extends Clue {
         context.startActivity(intent);
     }
 
+    @Override
+    public Clue deepCopy() {
+        return new TextClue(getName(), getHintText(), getSolvedText(), solution);
+    }
+
 }

@@ -70,4 +70,8 @@ public class GeofenceClue extends Clue {
         return context.getResources().getDrawable(R.drawable.map_search, context.getTheme());
     }
 
+    @Override
+    public Clue deepCopy() {
+        return new GeofenceClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), null);
+    }
 }

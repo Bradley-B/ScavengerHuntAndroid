@@ -13,6 +13,7 @@ import java.util.List;
 public abstract class Clue implements Serializable {
 
     abstract Drawable getDrawableIcon(Context context);
+    abstract Clue deepCopy();
 
     private String hintText;
     private String solvedText;
@@ -31,7 +32,7 @@ public abstract class Clue implements Serializable {
         this.type = type;
         this.name = name;
         this.activationList = new ArrayList<>();
-        state = State.INACTIVE;
+        resetState();
     }
 
     public int getStatusColor() {
@@ -94,6 +95,10 @@ public abstract class Clue implements Serializable {
         Clue other = (Clue) o;
         return getType().equals(other.getType()) && getName().equals(other.getName()) &&
                 getHintText().equals(other.getHintText()) && getSolvedText().equals(other.getSolvedText());
+    }
+
+    public void resetState() {
+        state = State.INACTIVE;
     }
 
 }
