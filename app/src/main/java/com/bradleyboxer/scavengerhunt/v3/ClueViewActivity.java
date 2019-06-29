@@ -47,13 +47,7 @@ public class ClueViewActivity extends MenuActivity {
                 frame.addView(clueView);
 
                 if(clue.getName().equals(triggeringClueName)) {
-                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-                    dlgAlert.setMessage(clue.getSolvedText());
-                    dlgAlert.setTitle("Solution Message");
-                    dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-                        @Override public void onClick(DialogInterface dialogInterface, int i) {}
-                    });
-                    dlgAlert.create().show();
+                    Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), this);
                 }
             }
         }

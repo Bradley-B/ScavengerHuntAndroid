@@ -78,23 +78,11 @@ public class ClueIndividualView extends LinearLayout {
     }
 
     public void viewHint() {
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
-        dlgAlert.setMessage(clue.getHintText());
-        dlgAlert.setTitle("Hint Message");
-        dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialogInterface, int i) {}
-        });
-        dlgAlert.create().show();
+        Notifications.displayAlertDialog("Hint Message", clue.getHintText(), getContext());
     }
 
     public void viewSolution() {
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
-        dlgAlert.setMessage(clue.getSolvedText());
-        dlgAlert.setTitle("Solution Message");
-        dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialogInterface, int i) {}
-        });
-        dlgAlert.create().show();
+        Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), getContext());
     }
 
 }
