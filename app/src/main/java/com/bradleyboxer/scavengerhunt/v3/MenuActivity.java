@@ -56,9 +56,9 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
             intent = new Intent(this, MainActivity.class);
         } else if (id == R.id.nav_clues) {
             intent = new Intent(this, ClueViewActivity.class);
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_export_qr) {
 
-        } else if (id == R.id.nav_send) {
+        } else if(id == R.id.nav_import_qr) {
 
         } else if (id == R.id.nav_answer_compass_clue) {
             ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
