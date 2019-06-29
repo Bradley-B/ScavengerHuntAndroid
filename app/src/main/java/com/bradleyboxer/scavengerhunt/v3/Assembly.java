@@ -3,6 +3,8 @@ package com.bradleyboxer.scavengerhunt.v3;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import java.util.UUID;
+
 public class Assembly {
 
     public static ScavengerHunt assembleMorganScavengerHunt(Context context) {
@@ -35,6 +37,26 @@ public class Assembly {
         final String CLUE_B1_NAME = "A Serious Hike";
         final String CLUE_B2_NAME = "Hi Point";
 
+        //ids
+        final UUID CLUE_1_ID = UUID.randomUUID();
+        final UUID CLUE_2_ID = UUID.randomUUID();
+        final UUID CLUE_3_ID = UUID.randomUUID();
+        final UUID CLUE_4_ID = UUID.randomUUID();
+        final UUID CLUE_5_ID = UUID.randomUUID();
+        final UUID CLUE_6_ID = UUID.randomUUID();
+        final UUID CLUE_7_ID = UUID.randomUUID();
+        final UUID CLUE_8_ID = UUID.randomUUID();
+        final UUID CLUE_A_ID = UUID.randomUUID();
+        final UUID CLUE_A1_ID = UUID.randomUUID();
+        final UUID CLUE_A2_ID = UUID.randomUUID();
+        final UUID CLUE_A3_ID = UUID.randomUUID();
+        final UUID CLUE_A4_ID = UUID.randomUUID();
+        final UUID CLUE_A5_ID = UUID.randomUUID();
+        final UUID CLUE_A6_ID = UUID.randomUUID();
+        final UUID CLUE_B_ID = UUID.randomUUID();
+        final UUID CLUE_B1_ID = UUID.randomUUID();
+        final UUID CLUE_B2_ID = UUID.randomUUID();
+        final UUID CLUE_B3_ID = UUID.randomUUID();
 
         //intro sequence
         GeoLocation beeautifulLocation = new GeoLocation(40.592046f, -74.664458f, 20);
@@ -47,9 +69,9 @@ public class Assembly {
                 "You passed the first test\n\n" +
                          "wasn't that hard I guessed\n\n" +
                          "hope you aren't at rest \n\n" +
-                         "(you) haven't won the contest (yet)", beeautifulLocation);
+                         "(you) haven't won the contest (yet)", beeautifulLocation, CLUE_1_ID);
         beeautifulClue.activate();
-        beeautifulClue.addChild(CLUE_2_NAME);
+        beeautifulClue.addChild(CLUE_2_ID);
         scavengerHunt.addClue(beeautifulClue);
 
         GeoLocation oneStepLocation = new GeoLocation(40.590845f, -74.667190f, 250);
@@ -62,8 +84,8 @@ public class Assembly {
                          "Water, sunblock, backpack, go steady\n\n" +
                          "When you're ready to advance\n\n" +
                          "Give luck a chance\n\n" +
-                         "And read this poem I've written already", oneStepLocation, geofenceManager);
-        oneStepClue.addChild(CLUE_3_NAME);
+                         "And read this poem I've written already", oneStepLocation, geofenceManager, CLUE_2_ID);
+        oneStepClue.addChild(CLUE_3_ID);
         scavengerHunt.addClue(oneStepClue);
 
         Clue loveClue = new TextClue(CLUE_3_NAME,
@@ -76,8 +98,8 @@ public class Assembly {
                     "I hope my hints weren't to rhetorical\n\n" +
                     "Ready to start?\n\n" +
                     "I've done my part\n\n" +
-                    "I'm sure the adventure will be historical", "love");
-        loveClue.addChild(CLUE_4_NAME);
+                    "I'm sure the adventure will be historical", "love", CLUE_3_ID);
+        loveClue.addChild(CLUE_4_ID);
         scavengerHunt.addClue(loveClue);
 
         //white oak clues
@@ -104,8 +126,8 @@ public class Assembly {
                         "\n" +
                         "Let's go, and quick!\n" +
                         "\n" +
-                        "Before the weather gets hot and thick", "white oak park");
-        caesarCipherClue.addChild(CLUE_5_NAME);
+                        "Before the weather gets hot and thick", "white oak park", CLUE_4_ID);
+        caesarCipherClue.addChild(CLUE_5_ID);
         scavengerHunt.addClue(caesarCipherClue);
 
         GeoLocation whiteOakGeofenceLocation = new GeoLocation(40.570997f, -74.712000f, 1000);
@@ -113,8 +135,8 @@ public class Assembly {
                 "Hop to it!",
                 "You made it!\n\n" +
                     "Continue on to discover all that's in store\n\n" +
-                    "Don't get down, there's so much more!\n\n", whiteOakGeofenceLocation, geofenceManager);
-        whiteOakArrivalClue.addChild(CLUE_6_NAME);
+                    "Don't get down, there's so much more!\n\n", whiteOakGeofenceLocation, geofenceManager, CLUE_5_ID);
+        whiteOakArrivalClue.addChild(CLUE_6_ID);
         scavengerHunt.addClue(whiteOakArrivalClue);
 
         GeoLocation whiteOakPlaygroundLocation = new GeoLocation(40.572673f, -74.714259f, 20);
@@ -129,8 +151,8 @@ public class Assembly {
                 "Endless fun. Danger. Adventure. \n\n" +
                 "And then at some point they brutally ripped out all that (and my heart) and replaced it with this. " +
                 "What a fucking shame.\n\n" +
-                "Thank you for coming to my TED talk.", "Sorry, I'm still salty about it.", whiteOakPlaygroundLocation);
-        whiteOakPlaygroundClue.addChild(CLUE_7_NAME);
+                "Thank you for coming to my TED talk.", "Sorry, I'm still salty about it.", whiteOakPlaygroundLocation, CLUE_6_ID);
+        whiteOakPlaygroundClue.addChild(CLUE_7_ID);
         scavengerHunt.addClue(whiteOakPlaygroundClue);
 
         GeoLocation whiteOakWoodsWalkLocation = new GeoLocation(40.570836f, -74.709674f, 15);
@@ -145,8 +167,8 @@ public class Assembly {
                         "But while we're back here, wanna make out?\n\n" +
                         "Just kidding, you know I'm too devout\n\n" +
                         "We wouldn't risk being caught by a cub scout\n\n" +
-                        "We'd have to flee, and that would not be far-out.", whiteOakWoodsWalkLocation);
-        whiteOakWoodsWalkClue.addChild(CLUE_8_NAME);
+                        "We'd have to flee, and that would not be far-out.", whiteOakWoodsWalkLocation, CLUE_7_ID);
+        whiteOakWoodsWalkClue.addChild(CLUE_8_ID);
         scavengerHunt.addClue(whiteOakWoodsWalkClue);
 
         //fork clues
@@ -168,25 +190,25 @@ public class Assembly {
                         "\n" +
                         "The choice is yours \n" +
                         "But you must move fast \n" +
-                        "Input 'near' or 'far' to choose our paths", "ok");
-        badNewsClue.addChild(CLUE_A_TITLE);
-        badNewsClue.addChild(CLUE_B_TITE);
+                        "Input 'near' or 'far' to choose our paths", "ok", CLUE_8_ID);
+        badNewsClue.addChild(CLUE_A_ID);
+        badNewsClue.addChild(CLUE_B_ID);
         scavengerHunt.addClue(badNewsClue);
 
         Clue forkClueNear = new TextClue(CLUE_A_TITLE,
                 "Pick me! Pick me!\n" +
                         "I've got lots to do and see\n\n" +
                         "I don't super long drive\n" +
-                        "And there'll be plenty of fun when you arrive!\n", ":)", "near");
-        forkClueNear.addChild(CLUE_A1_NAME);
+                        "And there'll be plenty of fun when you arrive!\n", ":)", "near", CLUE_A_ID);
+        forkClueNear.addChild(CLUE_A1_ID);
         scavengerHunt.addClue(forkClueNear);
 
         Clue forkClueFar = new TextClue(CLUE_B_TITE,
                 "Pick me! Pick me!\n" +
                         "I've got lots to do and see\n\n" +
                         "I know I have a super long drive\n" +
-                        "But it'll be worth it! It'll be one for the archive(s)!", ":)", "far");
-        forkClueFar.addChild(CLUE_B1_NAME);
+                        "But it'll be worth it! It'll be one for the archive(s)!", ":)", "far", CLUE_B_ID);
+        forkClueFar.addChild(CLUE_B1_ID);
         scavengerHunt.addClue(forkClueFar);
 
 
@@ -200,12 +222,12 @@ public class Assembly {
                  "Hope you've got bug spray or bees you'll attract",
                 "You made it!\n\n" +
                     "Continue on to discover all that's in store\n\n" +
-                    "Don't get down, there's so much more!\n\n", colonialLocation, geofenceManager);
-        colonialClue.addChild(CLUE_A2_NAME);
-        colonialClue.addChild(CLUE_A3_NAME);
-        colonialClue.addChild(CLUE_A4_NAME);
-        colonialClue.addChild(CLUE_A5_NAME);
-        colonialClue.addChild(CLUE_A6_NAME);
+                    "Don't get down, there's so much more!\n\n", colonialLocation, geofenceManager, CLUE_A1_ID);
+        colonialClue.addChild(CLUE_A2_ID);
+        colonialClue.addChild(CLUE_A3_ID);
+        colonialClue.addChild(CLUE_A4_ID);
+        colonialClue.addChild(CLUE_A5_ID);
+        colonialClue.addChild(CLUE_A6_ID);
         scavengerHunt.addClue(colonialClue);
 
         GeoLocation paddleBoatLocation = new GeoLocation(40.510262f, -74.560895f, 10);
@@ -218,7 +240,7 @@ public class Assembly {
                 "Good thing we did all that biking\n\n" +
                 "You'll need the strength for this cycling (paddling)\n\n" +
                 "Now, it's no hang gliding\n\n" +
-                "But it still should be exciting", paddleBoatLocation);
+                "But it still should be exciting", paddleBoatLocation, CLUE_A2_ID);
         scavengerHunt.addClue(paddleBoatClue);
 
         GeoLocation minigolfLocation = new GeoLocation(40.510862f, -74.560938f, 10);
@@ -228,7 +250,7 @@ public class Assembly {
                         "But don't fret\n\n" +
                         "I've got you set\n\n" +
                         "For this patience-involving activity",
-                "Wanna go minigolfing?", minigolfLocation);
+                "Wanna go minigolfing?", minigolfLocation, CLUE_A3_ID);
         scavengerHunt.addClue(minigolfClue);
 
         GeoLocation tennisLocation = new GeoLocation(40.509757f, -74.566910f, 20);
@@ -239,7 +261,7 @@ public class Assembly {
                         "Hit low to high or your ball will fall short",
                 "Wanna play tennis?\n" +
                         "It occurs to me now that we'll need to go get rackets, " +
-                        "unless I managed to hide them in my backpack somehow.", tennisLocation);
+                        "unless I managed to hide them in my backpack somehow.", tennisLocation, CLUE_A4_ID);
         scavengerHunt.addClue(tennisClue);
 
         GeoLocation roseGardenLocation = new GeoLocation(40.508941f, -74.573140f, 20);
@@ -247,24 +269,24 @@ public class Assembly {
                 "Do you smell it? That smell. A kind of smelly smell. A smelly smell that smells... smelly\n\n" +
                         "Roses!", "I don't remember what roses smell like. " +
                 "If they smell good, i'd say \"they smell almost as good as you\"," +
-                "and if they smell bad, i'd say \"dang these roses smell bad\".", roseGardenLocation);
+                "and if they smell bad, i'd say \"dang these roses smell bad\".", roseGardenLocation, CLUE_A5_ID);
         scavengerHunt.addClue(roseGardenClue);
 
         GeoLocation picnicLocation = new GeoLocation(40.510704f, -74.564166f, 20);
         Clue picnicClue = new CompassClue(CLUE_A6_NAME,
                 "After all that, I've really worked up an apatite. Good thing I packed lunch!",
-                "Oh, you thought I packed some for you? Smh, millennials these days and their handouts", picnicLocation);
+                "Oh, you thought I packed some for you? Smh, millennials these days and their handouts", picnicLocation, CLUE_A6_ID);
         scavengerHunt.addClue(picnicClue);
 
         //norvin green fork clues
         Clue dummyClueOne = new TextClue(CLUE_B1_NAME, "Hey, Morgan," +
-                "it's going to rain today and I don't want to get stuck out there. Another day.", "" ,"dummy thicc");
+                "it's going to rain today and I don't want to get stuck out there. Another day.", "" ,"dummy thicc", CLUE_B1_ID);
         scavengerHunt.addClue(dummyClueOne);
 
-        Clue dummyClueTwo = new TextClue("Dummy Clue Two", "", "", "dummy thicc2");
+        Clue dummyClueTwo = new TextClue("Dummy Clue Two", "", "", "dummy thicc2", CLUE_B2_ID);
         scavengerHunt.addClue(dummyClueTwo);
 
-        Clue dummyClueThree = new TextClue("Dummy Clue Three", "", "", "dummy thicc3");
+        Clue dummyClueThree = new TextClue("Dummy Clue Three", "", "", "dummy thicc3", CLUE_B3_ID);
         scavengerHunt.addClue(dummyClueThree);
 
         return scavengerHunt;
@@ -277,23 +299,27 @@ public class Assembly {
         final String CLUE_4_NAME = "Home Test 2";
         final String CLUE_5_NAME = "Text Input Test";
 
+        final UUID CLUE_2_ID = UUID.randomUUID();
+        final UUID CLUE_4_ID = UUID.randomUUID();
+        final UUID CLUE_5_ID = UUID.randomUUID();
+
         GeofenceManager geofenceManager = new GeofenceManager(context);
 
         //home test
         GeoLocation location2 = new GeoLocation(40.590845f, -74.667190f, 1000);
-        Clue clue2 = new GeofenceClue(CLUE_2_NAME, "hintText", "solvedText", location2, geofenceManager);
+        Clue clue2 = new GeofenceClue(CLUE_2_NAME, "hintText", "solvedText", location2, geofenceManager, CLUE_2_ID);
         clue2.activate();
-        clue2.addChild(CLUE_4_NAME);
+        clue2.addChild(CLUE_4_ID);
         scavengerHunt.addClue(clue2);
 
         //compass test
         GeoLocation location4 = new GeoLocation(40.590845f, -74.667190f, 20);
-        Clue clue4 = new CompassClue(CLUE_4_NAME, "hintText", "solvedText", location4);
-        clue4.addChild(CLUE_5_NAME);
+        Clue clue4 = new CompassClue(CLUE_4_NAME, "hintText", "solvedText", location4, CLUE_4_ID);
+        clue4.addChild(CLUE_5_ID);
         scavengerHunt.addClue(clue4);
 
         //text input test
-        Clue clue5 = new TextClue(CLUE_5_NAME, "hintText", "solvedText", "home");
+        Clue clue5 = new TextClue(CLUE_5_NAME, "hintText", "solvedText", "home", CLUE_5_ID);
         scavengerHunt.addClue(clue5);
 
         return scavengerHunt;

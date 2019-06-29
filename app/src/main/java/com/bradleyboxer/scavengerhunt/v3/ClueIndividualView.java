@@ -47,7 +47,7 @@ public class ClueIndividualView extends LinearLayout {
             public void onClick(View view) {
                 if(iconTouches>50) {
                     ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(getContext());
-                    scavengerHunt.solveClue(clue.getName());
+                    scavengerHunt.solveClue(clue.getUuid());
                     FileUtil.saveScavengerHunt(scavengerHunt, getContext());
                     Notifications.sendNotification(clue.getName(), getContext());
                 }

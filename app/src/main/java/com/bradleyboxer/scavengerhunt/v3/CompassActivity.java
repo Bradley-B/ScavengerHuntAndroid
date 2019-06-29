@@ -84,7 +84,7 @@ public class CompassActivity extends MenuActivity {
         if(clue.shouldBeSolved(distanceToTarget) && !solved) {
             //solve clue
             ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-            scavengerHunt.solveClue(clue.getName());
+            scavengerHunt.solveClue(clue.getUuid());
             FileUtil.saveScavengerHunt(scavengerHunt, this);
             Notifications.sendNotification(clue.getName(), this);
             solved = true;

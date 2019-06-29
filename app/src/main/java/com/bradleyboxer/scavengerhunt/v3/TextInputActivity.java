@@ -26,7 +26,7 @@ public class TextInputActivity extends MenuActivity {
             if(clue.getType().equals(Clue.Type.TEXT)) {
                 TextClue textClue = (TextClue) clue;
                 if(textClue.shouldBeSolved(text)) {
-                    scavengerHunt.solveClue(clue.getName());
+                    scavengerHunt.solveClue(clue.getUuid());
                     Notifications.sendNotification(clue.getName(), this);
                 }
             }

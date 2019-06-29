@@ -197,7 +197,7 @@ public class MainActivity extends MenuActivity {
                 GeofenceClue geofenceClue = (GeofenceClue) clue;
                 boolean shouldBeSolved = geofenceClue.shouldBeSolved(location);
                 if(shouldBeSolved) {
-                    scavengerHunt.solveClue(clue.getName());
+                    scavengerHunt.solveClue(clue.getUuid());
                     FileUtil.saveScavengerHunt(scavengerHunt, this);
                     Notifications.sendNotification(clue.getName(), this);
                     atLeastOneSolved = true;

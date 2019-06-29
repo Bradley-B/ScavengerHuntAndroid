@@ -92,23 +92,23 @@ public class ScavengerHunt implements Serializable {
         return new int[] {inactive, active, solved};
     }
 
-    public Clue getClue(String clueName) {
+    public Clue getClue(UUID clueUuid) {
         for(Clue c : getClueList()) {
-            if(clueName.equals(c.getName())) {
+            if(clueUuid.equals(c.getUuid())) {
                 return c;
             }
         }
         return null;
     }
 
-    public void solveClue(String clueName) {
-        Clue clue = getClue(clueName);
+    public void solveClue(UUID clueUuid) {
+        Clue clue = getClue(clueUuid);
         clue.solved();
 
-        //activate next clue
-        List<String> clueChildrenNames = clue.getChildren();
-        for(String name : clueChildrenNames) {
-            Clue child = getClue(name);
+        //activate next clue(s)
+        List<UUID> childrenIds = clue.getChildren();
+        for(UUID id : childrenIds) {
+            Clue child = getClue(id);
             child.activate();
         }
     }
