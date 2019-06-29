@@ -74,6 +74,10 @@ public class GeofenceClue extends Clue {
 
     @Override
     public Clue deepCopy() {
-        return new GeofenceClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), null, getUuid());
+        GeofenceClue clue = new GeofenceClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), null, getUuid());
+        for(UUID child : getChildren()) {
+            clue.addChild(child);
+        }
+        return clue;
     }
 }

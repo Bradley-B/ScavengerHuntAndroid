@@ -63,15 +63,13 @@ public class ScavengerHuntDatabase {
     }
 
     public void uploadScavengerHunt(ScavengerHunt scavengerHunt, final Context context) {
-        List<Clue> clueList = scavengerHunt.getClueList();
         final ScavengerHunt scavengerHuntToUpload = new ScavengerHunt(scavengerHunt);
-        scavengerHuntToUpload.getClueList().clear();
+        List<Clue> clueList = scavengerHunt.getClueList();
 
         //to store, mark all clues as inactive except the first
         for(Clue clue : clueList) {
-            Clue resetClue = clue.deepCopy();
-            resetClue.resetState();
-            scavengerHuntToUpload.addClue(resetClue);
+            clue.resetState();
+            scavengerHuntToUpload.addClue(clue);
         }
 
         if(scavengerHuntToUpload.getClueList().isEmpty()) {

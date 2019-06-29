@@ -40,7 +40,11 @@ public class CompassClue extends Clue {
 
     @Override
     public Clue deepCopy() {
-        return new CompassClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), getUuid());
+        CompassClue clue = new CompassClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), getUuid());
+        for(UUID child : getChildren()) {
+            clue.addChild(child);
+        }
+        return clue;
     }
 
 }

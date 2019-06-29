@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    implementation 'org.danilopianini:gson-extras:0.2.1'
 
     testImplementation 'junit:junit:4.12'
 

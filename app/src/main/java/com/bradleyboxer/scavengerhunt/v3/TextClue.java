@@ -34,7 +34,11 @@ public class TextClue extends Clue {
 
     @Override
     public Clue deepCopy() {
-        return new TextClue(getName(), getHintText(), getSolvedText(), solution, getUuid());
+        TextClue clue = new TextClue(getName(), getHintText(), getSolvedText(), solution, getUuid());
+        for(UUID child : getChildren()) {
+            clue.addChild(child);
+        }
+        return clue;
     }
 
 }

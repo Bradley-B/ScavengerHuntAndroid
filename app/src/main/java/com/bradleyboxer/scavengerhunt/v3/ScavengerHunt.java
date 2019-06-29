@@ -4,11 +4,17 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +26,21 @@ public class ScavengerHunt implements Serializable {
     private final UUID uuid;
     private String name;
 
+    private static final Gson gson;
+    static {
+        RuntimeTypeAdapterFactory<Clue> clueAdapterFactory = RuntimeTypeAdapterFactory.of(Clue.class, "clueType")
+                .registerSubtype(GeofenceClue.class, "Geofence")
+                .registerSubtype(CompassClue.class, "Compass")
+                .registerSubtype(TextClue.class, "Text");
+        gson = new GsonBuilder().registerTypeAdapterFactory(clueAdapterFactory).create();
+    }
+
     public ScavengerHunt(ScavengerHunt scavengerHunt) {
         this.uuid = scavengerHunt.getUuid();
-        this.clueList = new ArrayList<>(scavengerHunt.getClueList());
+        this.clueList = new ArrayList<>();
+        for(Clue c : scavengerHunt.getClueList()) {
+            addClue(c.deepCopy());
+        }
         this.inactiveCluesDisplayed = scavengerHunt.inactiveCluesDisplayed;
         this.name = scavengerHunt.getName();
     }
@@ -114,18 +132,11 @@ public class ScavengerHunt implements Serializable {
     }
 
     public static String serialize(ScavengerHunt scavengerHunt) throws Exception {
-        ByteArrayOutputStream bo = new ByteArrayOutputStream();
-        ObjectOutputStream so = new ObjectOutputStream(bo);
-        so.writeObject(scavengerHunt);
-        so.flush();
-        return new String(Base64.encode(bo.toByteArray(), Base64.DEFAULT));
+        return gson.toJson(scavengerHunt);
     }
 
     public static ScavengerHunt deserialize(String serializedObject, Context context) throws Exception {
-        byte b[] = Base64.decode(serializedObject.getBytes(), Base64.DEFAULT);
-        ByteArrayInputStream bi = new ByteArrayInputStream(b);
-        ObjectInputStream si = new ObjectInputStream(bi);
-        ScavengerHunt scavengerHunt = (ScavengerHunt) si.readObject();
+        ScavengerHunt scavengerHunt = gson.fromJson(serializedObject, ScavengerHunt.class);
 
         GeofenceManager geofenceManager = new GeofenceManager(context);
         for(Clue clue : scavengerHunt.getClueList()) {
