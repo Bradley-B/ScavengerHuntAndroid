@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 public class Assembly {
 
     public static ScavengerHunt assembleMorganScavengerHunt(Context context) {
-        ScavengerHunt scavengerHunt = new ScavengerHunt(false);
+        ScavengerHunt scavengerHunt = new ScavengerHunt(false, "Morgan Adventure");
         GeofenceManager geofenceManager = new GeofenceManager(context);
 
         //intro sequence
@@ -271,7 +271,7 @@ public class Assembly {
     }
 
     public static ScavengerHunt assembleTestScavengerHunt(Context context) {
-        ScavengerHunt scavengerHunt = new ScavengerHunt(false);
+        ScavengerHunt scavengerHunt = new ScavengerHunt(false, "Test");
 
         final String CLUE_2_NAME = "Home Test";
         final String CLUE_4_NAME = "Home Test 2";
