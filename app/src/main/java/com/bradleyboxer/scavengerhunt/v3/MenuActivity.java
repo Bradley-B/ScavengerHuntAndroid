@@ -57,6 +57,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         } else if (id == R.id.nav_clues) {
             intent = new Intent(this, ClueViewActivity.class);
         } else if (id == R.id.nav_export_qr) {
+            intent = new Intent(this, GenerateQrActivity.class);
 
         } else if(id == R.id.nav_import_qr) {
 

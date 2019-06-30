@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -146,5 +148,11 @@ public class ScavengerHunt implements Serializable {
             }
         }
         return scavengerHunt;
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return getName();
     }
 }
