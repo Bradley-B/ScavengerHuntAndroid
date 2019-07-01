@@ -42,6 +42,10 @@ public abstract class Clue implements Serializable {
         return uuid;
     }
 
+    public State getState() {
+        return state;
+    }
+
     public int getStatusColor() {
         if(isSolved()) {
             return R.color.clueStatusDone;
@@ -104,12 +108,18 @@ public abstract class Clue implements Serializable {
         if(!(o instanceof Clue)) return false;
 
         Clue other = (Clue) o;
-        return getType().equals(other.getType()) && getName().equals(other.getName()) &&
-                getHintText().equals(other.getHintText()) && getSolvedText().equals(other.getSolvedText());
+        return other.getUuid().equals(getUuid());
+
+//        return getType().equals(other.getType()) && getName().equals(other.getName()) &&
+//                getHintText().equals(other.getHintText()) && getSolvedText().equals(other.getSolvedText());
     }
 
     public void resetState() {
-        state = State.INACTIVE;
+        setState(State.INACTIVE);
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
 }

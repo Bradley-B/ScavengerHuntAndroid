@@ -65,9 +65,8 @@ public class GenerateQrActivity extends AppCompatActivity implements AdapterView
         Drawable drawable = getResources().getDrawable(R.drawable.ic_menu_qr, getTheme());
         imageView.setImageDrawable(drawable);
 
-        //TODO populate from ScavengerHuntDatabase
-        List<ScavengerHunt> scavengerHunts = new ArrayList<>();
-        scavengerHunts.add(FileUtil.loadScavengerHunt(this));
+        ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+        List<ScavengerHunt> scavengerHunts = scavengerHuntDatabase.getScavengerHunts();
 
         Spinner spinner = (Spinner) findViewById(R.id.scavengerhunt_spinner);
         ArrayAdapter<ScavengerHunt> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, scavengerHunts);

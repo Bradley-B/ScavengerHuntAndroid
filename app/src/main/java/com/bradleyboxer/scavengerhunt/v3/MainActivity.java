@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import com.google.android.material.navigation.NavigationView;
 import android.view.Menu;
@@ -27,7 +28,7 @@ import java.util.List;
 public class MainActivity extends MenuActivity {
 
     public static final int LOCATION_REQUEST_ID = 1;
-    private ScavengerHunt scavengerHunt;
+    private ScavengerHuntDatabase scavengerHuntDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +38,14 @@ public class MainActivity extends MenuActivity {
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_ID);
         }
 
-        scavengerHunt = FileUtil.loadScavengerHunt(this);
-        if(scavengerHunt==null) {
-            scavengerHunt = Assembly.assembleMorganScavengerHunt(this);
-            FileUtil.saveScavengerHunt(scavengerHunt, this);
+        scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+        if(scavengerHuntDatabase==null) {
+            scavengerHuntDatabase = new ScavengerHuntDatabase();
+            scavengerHuntDatabase.addScavengerHunt(Assembly.assembleMorganScavengerHunt(this)); //TODO remove
+            FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
         }
 
-        int[] states = scavengerHunt.getClueStates();
+        int[] states = scavengerHuntDatabase.getTotalClueStates();
         TextView stateViewInactive = findViewById(R.id.clueStatus_inactive);
         TextView stateViewActive = findViewById(R.id.clueStatus_active);
         TextView stateViewSolved = findViewById(R.id.clueStatus_solved);
@@ -112,7 +114,7 @@ public class MainActivity extends MenuActivity {
     @Override
     public void onStart() {
         super.onStart();
-        float progress = scavengerHunt.getProgressPercent();
+        float progress = scavengerHuntDatabase.getTotalProgressPercent();
 
         //animate progress bar to current position
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -158,7 +160,12 @@ public class MainActivity extends MenuActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if(id == R.id.action_load_test) {
-            FileUtil.saveScavengerHunt(Assembly.assembleMorganScavengerHunt(this), this);
+
+            scavengerHuntDatabase = new ScavengerHuntDatabase(); //TODO remove
+            ScavengerHunt morganScavengerHunt = Assembly.assembleMorganScavengerHunt(this);
+            scavengerHuntDatabase.addScavengerHunt(morganScavengerHunt);
+            scavengerHuntDatabase.setActiveScavengerHunt(this, morganScavengerHunt.getUuid());
+            FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
             reloadActivity();
             return true;
         }
@@ -191,19 +198,26 @@ public class MainActivity extends MenuActivity {
 
     public boolean forceSolveGeofenceClues(Location location) {
         boolean atLeastOneSolved = false;
-        List<Clue> clueList = scavengerHunt.getClueList();
-        for(Clue clue : clueList) {
-            if(clue.getType().equals(Clue.Type.GEOFENCE)) {
-                GeofenceClue geofenceClue = (GeofenceClue) clue;
-                boolean shouldBeSolved = geofenceClue.shouldBeSolved(location);
-                if(shouldBeSolved) {
-                    scavengerHunt.solveClue(clue.getUuid());
-                    FileUtil.saveScavengerHunt(scavengerHunt, this);
-                    Notifications.sendNotification(clue.getName(), this);
-                    atLeastOneSolved = true;
+
+        for(ScavengerHunt scavengerHunt : scavengerHuntDatabase.getScavengerHunts()) {
+            List<Clue> clueList = scavengerHunt.getClueList();
+            for(Clue clue : clueList) {
+                if(clue.getType().equals(Clue.Type.GEOFENCE)) {
+                    GeofenceClue geofenceClue = (GeofenceClue) clue;
+                    boolean shouldBeSolved = geofenceClue.shouldBeSolved(location);
+                    if(shouldBeSolved) {
+                        scavengerHunt.solveClue(clue.getUuid());
+                        Notifications.sendNotification(clue.getName(), this);
+                        atLeastOneSolved = true;
+                    }
                 }
             }
         }
+
+        if(atLeastOneSolved) {
+            FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
+        }
+
         return atLeastOneSolved;
     }
 }

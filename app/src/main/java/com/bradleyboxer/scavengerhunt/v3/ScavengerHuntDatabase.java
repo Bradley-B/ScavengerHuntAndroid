@@ -1,9 +1,13 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,32 +16,126 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ScavengerHuntDatabase {
+public class ScavengerHuntDatabase implements Serializable {
 
     public static final String TAG = "FIRESTORE";
 
     public static final String DB_KEY_DATA = "scavengerHunt";
     public static final String DB_KEY_NAME = "name";
 
+    public static final String PREFERENCES_KEY = "com.bradleyboxer.scavengerhunt.preferences";
+    public static final String ACTIVE_SCAVENGER_HUNT_KEY = "activeScavengerHunt";
+
     private List<ScavengerHunt> localScavengerHunts;
-    private FirebaseFirestore remoteDb;
+    private transient FirebaseFirestore remoteDb;
 
     public ScavengerHuntDatabase() {
         remoteDb = FirebaseFirestore.getInstance();
         localScavengerHunts = new ArrayList<>();
     }
 
-    public void addScavengerHunt(ScavengerHunt scavengerHunt) {
+    public void resetRemoteDb() {
+        remoteDb = FirebaseFirestore.getInstance();
+    }
+
+    public synchronized int[] getTotalClueStates() {
+        int inactive = 0;
+        int active = 0;
+        int solved = 0;
+        for(ScavengerHunt scavengerHunt : getScavengerHunts()) {
+            int[] clueStates = scavengerHunt.getClueStates();
+            inactive += clueStates[0];
+            active += clueStates[1];
+            solved += clueStates[2];
+
+        }
+        return new int[] {inactive, active, solved};
+    }
+
+    public float getTotalProgressPercent() {
+        int[] totalClueStates = getTotalClueStates();
+        int totalClues = totalClueStates[0]+totalClueStates[1]+totalClueStates[2];
+
+        if(totalClues==0) {
+            return 1;
+        }
+        return totalClueStates[2]/(float)totalClues;
+    }
+
+    public synchronized void setActiveScavengerHunt(Context context, UUID scavengerHuntId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(ACTIVE_SCAVENGER_HUNT_KEY, scavengerHuntId.toString()).commit();
+    }
+
+    @Nullable
+    public synchronized ScavengerHunt getActiveScavengerHunt(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+        String activeScavengerHuntIdString = sharedPreferences.getString(ACTIVE_SCAVENGER_HUNT_KEY, "null");
+
+        if(activeScavengerHuntIdString.equals("null")) {
+            if(localScavengerHunts.isEmpty()) {
+                return null;
+            }
+            setActiveScavengerHunt(context, localScavengerHunts.get(0).getUuid());
+            return localScavengerHunts.get(0);
+        }
+        return getScavengerHunt(UUID.fromString(activeScavengerHuntIdString));
+    }
+
+    @Nullable
+    public synchronized ScavengerHunt getScavengerHunt(UUID scavengerHuntId) {
+        for(ScavengerHunt scavengerHunt : getScavengerHunts()) {
+            if(scavengerHuntId.equals(scavengerHunt.getUuid())) {
+                return scavengerHunt;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public synchronized Clue getClue(UUID clueId) {
+        for(ScavengerHunt scavengerHunt : getScavengerHunts()) {
+            Clue clue = scavengerHunt.getClue(clueId);
+            if(clue!=null) {
+                return clue;
+            }
+        }
+        return null;
+    }
+
+    public synchronized void solveClue(UUID clueId) {
+        List<ScavengerHunt> scavengerHunts = getScavengerHunts();
+        for(ScavengerHunt scavengerHunt : scavengerHunts) {
+            scavengerHunt.solveClue(clueId);
+        }
+    }
+
+    public synchronized void solveClue(Clue clue) {
+        solveClue(clue.getUuid());
+    }
+
+    public synchronized List<ScavengerHunt> getScavengerHunts() {
+        return localScavengerHunts;
+    }
+
+    public synchronized void addScavengerHunt(ScavengerHunt scavengerHunt) {
         localScavengerHunts.add(scavengerHunt);
     }
 
-    public void downloadScavengerHunt(final UUID uuid, final Context context) {
+    /**
+     * Asynchronously downloads a scavenger hunt, adds it to this database, then saves this database to a file.
+     * @param uuid the UUID of the scavenger hunt to download
+     * @param context the current app context, usually an activity or service
+     */
+    public synchronized void downloadScavengerHunt(final UUID uuid, final Context context) {
         remoteDb.collection("scavengerHunts").document(uuid.toString()).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -48,8 +146,17 @@ public class ScavengerHuntDatabase {
                             Map<String, Object> dbEntry = document.getData();
 
                             try {
-                                ScavengerHunt scavengerHunt = ScavengerHunt.deserialize((String) dbEntry.get(DB_KEY_DATA), context);
-                                addScavengerHunt(scavengerHunt);
+                                final ScavengerHunt newScavengerHunt = ScavengerHunt.deserialize((String) dbEntry.get(DB_KEY_DATA), context);
+
+                                //make sure there are no conflicts
+                                if(getScavengerHunts().contains(newScavengerHunt)) {
+                                    handleConflict(context, newScavengerHunt);
+                                } else {
+                                    localScavengerHunts.add(newScavengerHunt);
+                                    FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, context);
+                                    Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", context);
+                                }
+
                             } catch (Exception e) {
                                 Notifications.displayAlertDialog("Error", "Error decrypting scavenger hunt. Please confirm it was uploaded correctly.", context);
                             }
@@ -62,7 +169,41 @@ public class ScavengerHuntDatabase {
                 });
     }
 
-    public void uploadScavengerHunt(ScavengerHunt scavengerHunt, final Context context) {
+    private synchronized void handleConflict(final Context context, final ScavengerHunt newScavengerHunt) {
+        //conflict. Ask to override or merge
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Action Required");
+        builder.setMessage("This scavenger hunt is already downloaded. Would you like to preserve your current progress, or overwrite it?");
+        builder.setPositiveButton("Preserve Progress", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ScavengerHunt oldScavengerHunt = getScavengerHunt(newScavengerHunt.getUuid());
+                if(oldScavengerHunt != null) {
+                    oldScavengerHunt.mergeWith(newScavengerHunt);
+                    localScavengerHunts.add(oldScavengerHunt);
+
+                    FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, context);
+                    Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", context);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel Import", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {}
+        });
+        builder.setNeutralButton("Overwrite Progress", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                localScavengerHunts.remove(newScavengerHunt);
+                localScavengerHunts.add(newScavengerHunt);
+
+                FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, context);
+                Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", context);
+            }
+        });
+        builder.create().show();
+    }
+
+    public synchronized void uploadScavengerHunt(ScavengerHunt scavengerHunt, final Context context) {
         final ScavengerHunt scavengerHuntToUpload = new ScavengerHunt(scavengerHunt);
         List<Clue> clueList = scavengerHunt.getClueList();
 
@@ -102,6 +243,7 @@ public class ScavengerHuntDatabase {
                     });
         } catch (Exception e) {
             Notifications.displayAlertDialog("Error", "Error encrypting scavenger hunt. Please try again.", context);
+            Log.e(TAG, "oops", e);
         }
     }
 }

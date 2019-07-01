@@ -5,6 +5,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -74,19 +75,6 @@ public class ScavengerHunt implements Serializable {
         return clueList;
     }
 
-    public float getProgressPercent() {
-        int numSolved = 0;
-        for(Clue clue : clueList) {
-            if(clue.isSolved()) {
-                numSolved++;
-            }
-        }
-        if(clueList.size()==0) {
-            return 1;
-        }
-        return numSolved/(float)clueList.size();
-    }
-
     public Clue getEarliestUnsolved(Clue.Type type) {
         for(Clue clue : getClueList()) {
             if(clue.getType().equals(type) && clue.isActive() && !clue.isSolved()) {
@@ -112,6 +100,7 @@ public class ScavengerHunt implements Serializable {
         return new int[] {inactive, active, solved};
     }
 
+    @Nullable
     public Clue getClue(UUID clueUuid) {
         for(Clue c : getClueList()) {
             if(clueUuid.equals(c.getUuid())) {
@@ -123,14 +112,36 @@ public class ScavengerHunt implements Serializable {
 
     public void solveClue(UUID clueUuid) {
         Clue clue = getClue(clueUuid);
-        clue.solved();
+        if(clue != null) {
+            clue.solved();
 
-        //activate next clue(s)
-        List<UUID> childrenIds = clue.getChildren();
-        for(UUID id : childrenIds) {
-            Clue child = getClue(id);
-            child.activate();
+            //activate next clue(s)
+            List<UUID> childrenIds = clue.getChildren();
+            for(UUID id : childrenIds) {
+                Clue child = getClue(id);
+                if(child != null) {
+                    child.activate();
+                }
+            }
         }
+    }
+
+    /**
+     * Merge a new scavenger hunt with this one, attempting to preserve states of equal clues.
+     * The new scavenger hunt is used as the base, which means it will delete clues if they are removed in the new version.
+     * @param scavengerHunt the scavenger hunt to merge with
+     */
+    public void mergeWith(ScavengerHunt scavengerHunt) {
+        List<Clue> duplicates = new ArrayList<>();
+        for(Clue newClue : scavengerHunt.getClueList()) {
+            Clue oldEquivalent = getClue(newClue.getUuid());
+            if(oldEquivalent!=null) { //clue exists in both scavenger hunts
+                newClue.setState(oldEquivalent.getState());
+                duplicates.add(oldEquivalent);
+            }
+        }
+        clueList.removeAll(duplicates);
+        clueList.addAll(scavengerHunt.getClueList());
     }
 
     public static String serialize(ScavengerHunt scavengerHunt) throws Exception {
@@ -148,6 +159,19 @@ public class ScavengerHunt implements Serializable {
             }
         }
         return scavengerHunt;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(other == this) {
+            return true;
+        }
+
+        if(other instanceof ScavengerHunt) {
+            ScavengerHunt otherScavengerHunt = (ScavengerHunt) other;
+            return otherScavengerHunt.getUuid().equals(getUuid());
+        }
+        return false;
     }
 
     @Override

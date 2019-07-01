@@ -13,6 +13,8 @@ import android.view.MenuItem;
 
 import com.bradleyboxer.scavengerhunt.R;
 
+import java.io.File;
+
 public abstract class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private int checkedId;
@@ -58,12 +60,15 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
             intent = new Intent(this, ClueViewActivity.class);
         } else if (id == R.id.nav_export_qr) {
             intent = new Intent(this, GenerateQrActivity.class);
-
         } else if(id == R.id.nav_import_qr) {
 
         } else if (id == R.id.nav_answer_compass_clue) {
-            ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-            Clue earliestUnsolved = scavengerHunt.getEarliestUnsolved(Clue.Type.COMPASS);
+            ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+            ScavengerHunt scavengerHunt = scavengerHuntDatabase.getActiveScavengerHunt(this);
+            Clue earliestUnsolved = null;
+            if(scavengerHunt != null) {
+                earliestUnsolved = scavengerHunt.getEarliestUnsolved(Clue.Type.COMPASS);
+            }
 
             intent = new Intent(this, CompassActivity.class);
             intent.putExtra("clue", earliestUnsolved);

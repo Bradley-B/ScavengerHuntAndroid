@@ -7,6 +7,8 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -32,22 +34,27 @@ public class ClueViewActivity extends MenuActivity {
         });
 
         Intent triggeringIntent = getIntent();
-        String triggeringClueName = triggeringIntent.getStringExtra("clueName");
+        String triggeringClueName = triggeringIntent.getStringExtra("clueName"); //TODO replace String with UUID
 
         LinearLayout frame = findViewById(R.id.clue_view_layout);
-        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-        boolean displayInactiveClues = scavengerHunt.areInactiveCluesDisplayed();
 
-        List<Clue> reversedList = new ArrayList<>(scavengerHunt.getClueList());
-        Collections.reverse(reversedList);
+        ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+        ScavengerHunt scavengerHunt = scavengerHuntDatabase.getActiveScavengerHunt(this);
 
-        for(Clue clue : reversedList) {
-            if(displayInactiveClues || clue.isActive() || clue.isSolved()) {
-                ClueIndividualView clueView = new ClueIndividualView(this, clue);
-                frame.addView(clueView);
+        if(scavengerHunt!=null) {
+            boolean displayInactiveClues = scavengerHunt.areInactiveCluesDisplayed();
 
-                if(clue.getName().equals(triggeringClueName)) {
-                    Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), this);
+            List<Clue> reversedList = new ArrayList<>(scavengerHunt.getClueList());
+            Collections.reverse(reversedList);
+
+            for(Clue clue : reversedList) {
+                if(displayInactiveClues || clue.isActive() || clue.isSolved()) {
+                    ClueIndividualView clueView = new ClueIndividualView(getApplicationContext(), clue, this);
+                    frame.addView(clueView);
+
+                    if(clue.getName().equals(triggeringClueName)) {
+                        Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), this);
+                    }
                 }
             }
         }

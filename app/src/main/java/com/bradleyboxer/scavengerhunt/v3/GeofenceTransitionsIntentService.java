@@ -48,16 +48,17 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 UUID geofenceId = UUID.fromString(triggeringGeofence.getRequestId());
 
                 //mark the geofence as solved
-                ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
+                ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+                Clue clue = scavengerHuntDatabase.getClue(geofenceId);
+                if(clue != null) {
+                    scavengerHuntDatabase.solveClue(clue);
+                    FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
 
-                Clue clue = scavengerHunt.getClue(geofenceId);
-                scavengerHunt.solveClue(geofenceId);
+                    // Send notification and log the transition details.
+                    Notifications.sendNotification(clue.getName(), this);
+                    Log.i("GEOFENCE STATUS", "Entering geofence: "+clue.getName());
+                }
 
-                FileUtil.saveScavengerHunt(scavengerHunt, this);
-
-                // Send notification and log the transition details.
-                Notifications.sendNotification(clue.getName(), this);
-                Log.i("GEOFENCE STATUS", "Entering geofence: "+clue.getName());
             }
 
         } else {
