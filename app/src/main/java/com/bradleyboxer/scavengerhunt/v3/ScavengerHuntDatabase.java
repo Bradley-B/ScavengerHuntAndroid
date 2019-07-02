@@ -205,12 +205,10 @@ public class ScavengerHuntDatabase implements Serializable {
 
     public synchronized void uploadScavengerHunt(ScavengerHunt scavengerHunt, final Context context) {
         final ScavengerHunt scavengerHuntToUpload = new ScavengerHunt(scavengerHunt);
-        List<Clue> clueList = scavengerHunt.getClueList();
 
         //to store, mark all clues as inactive except the first
-        for(Clue clue : clueList) {
+        for(Clue clue : scavengerHuntToUpload.getClueList()) {
             clue.resetState();
-            scavengerHuntToUpload.addClue(clue);
         }
 
         if(scavengerHuntToUpload.getClueList().isEmpty()) {

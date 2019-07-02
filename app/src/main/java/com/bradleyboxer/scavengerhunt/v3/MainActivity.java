@@ -27,21 +27,23 @@ import java.util.List;
 
 public class MainActivity extends MenuActivity {
 
-    public static final int LOCATION_REQUEST_ID = 1;
+    public static final int LOCATION_AND_CAMERA_REQUEST_ID = 1;
     private ScavengerHuntDatabase scavengerHuntDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_ID);
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA},
+                    LOCATION_AND_CAMERA_REQUEST_ID);
         }
 
         scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
         if(scavengerHuntDatabase==null) {
             scavengerHuntDatabase = new ScavengerHuntDatabase();
-            scavengerHuntDatabase.addScavengerHunt(Assembly.assembleMorganScavengerHunt(this)); //TODO remove
             FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
         }
 
@@ -160,11 +162,7 @@ public class MainActivity extends MenuActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if(id == R.id.action_load_test) {
-
-            scavengerHuntDatabase = new ScavengerHuntDatabase(); //TODO remove
-            ScavengerHunt morganScavengerHunt = Assembly.assembleMorganScavengerHunt(this);
-            scavengerHuntDatabase.addScavengerHunt(morganScavengerHunt);
-            scavengerHuntDatabase.setActiveScavengerHunt(this, morganScavengerHunt.getUuid());
+            scavengerHuntDatabase = new ScavengerHuntDatabase();
             FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
             reloadActivity();
             return true;
@@ -175,7 +173,7 @@ public class MainActivity extends MenuActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(requestCode == LOCATION_REQUEST_ID) {
+        if(requestCode == LOCATION_AND_CAMERA_REQUEST_ID) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                  throw new RuntimeException();
             }
@@ -187,6 +185,24 @@ public class MainActivity extends MenuActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_progress);
+
+        Log.e("FIREBASE","activity result processed, resultcode: " + resultCode);
+
+        if(resultCode == MainActivity.QR_RESULT_CODE) {
+
+            QrEntry entry = (QrEntry) data.getSerializableExtra(QrScanner.QR_CODE_KEY);
+            ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+
+            Log.e("FIREBASE","downloading scavenger hunt");
+
+            if(entry.getType().equals(QrEntry.Type.SCAVENGER_HUNT)) {
+                scavengerHuntDatabase.downloadScavengerHunt(entry.getUuid(), this);
+            } else if(entry.getType().equals(QrEntry.Type.CLUE)) {
+                scavengerHuntDatabase.solveClue(entry.getUuid());
+            }
+
+        }
+
     }
 
     public void reloadActivity() {

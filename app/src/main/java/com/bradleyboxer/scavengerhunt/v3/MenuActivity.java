@@ -13,12 +13,12 @@ import android.view.MenuItem;
 
 import com.bradleyboxer.scavengerhunt.R;
 
-import java.io.File;
-
 public abstract class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private int checkedId;
     private NavigationView navigationView;
+
+    public static final int QR_RESULT_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -53,14 +53,18 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
             return false;
         }
 
-        Intent intent = null;
         if (id == R.id.nav_progress) {
-            intent = new Intent(this, MainActivity.class);
+            useIntent(MainActivity.class);
         } else if (id == R.id.nav_clues) {
-            intent = new Intent(this, ClueViewActivity.class);
+            useIntent(ClueViewActivity.class);
         } else if (id == R.id.nav_export_qr) {
-            intent = new Intent(this, GenerateQrActivity.class);
+            useIntent(GenerateQrActivity.class);
         } else if(id == R.id.nav_import_qr) {
+            Intent intent = new Intent(this, QrScanner.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivityForResult(intent, QR_RESULT_CODE);
+            overridePendingTransition(0, 0);
 
         } else if (id == R.id.nav_answer_compass_clue) {
             ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
@@ -70,24 +74,28 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                 earliestUnsolved = scavengerHunt.getEarliestUnsolved(Clue.Type.COMPASS);
             }
 
-            intent = new Intent(this, CompassActivity.class);
+            Intent intent = new Intent(this, CompassActivity.class);
             intent.putExtra("clue", earliestUnsolved);
+            useIntent(intent);
         } else if (id == R.id.nav_answer_text_clue) {
-            intent = new Intent(this, TextInputActivity.class);
+            useIntent(TextInputActivity.class);
         }
-
-        if(intent==null) {
-            return false;
-        }
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-        overridePendingTransition(0, 0);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void useIntent(Intent intent) {
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+    }
+
+    private void useIntent(Class<?> activityClass) {
+        Intent intent = new Intent(this, activityClass);
+        useIntent(intent);
     }
 
     @Override

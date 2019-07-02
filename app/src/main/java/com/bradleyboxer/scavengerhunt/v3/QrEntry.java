@@ -1,10 +1,12 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class QrEntry {
+public class QrEntry implements Serializable {
 
     public enum Type {SCAVENGER_HUNT, CLUE}
 
@@ -22,7 +24,7 @@ public class QrEntry {
         return gson.toJson(this);
     }
 
-    public static QrEntry deserialize(String json) {
+    public static QrEntry deserialize(String json) throws JsonSyntaxException {
         return gson.fromJson(json, QrEntry.class);
     }
 
