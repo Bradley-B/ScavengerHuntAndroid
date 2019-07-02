@@ -47,23 +47,8 @@ public class MainActivity extends MenuActivity {
             FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
         }
 
-        int[] states = scavengerHuntDatabase.getTotalClueStates();
-        TextView stateViewInactive = findViewById(R.id.clueStatus_inactive);
-        TextView stateViewActive = findViewById(R.id.clueStatus_active);
-        TextView stateViewSolved = findViewById(R.id.clueStatus_solved);
-        stateViewInactive.setText(Html.fromHtml("<b><big>"+states[0]+"</big></b>"+"<br><small><small>inactive</small></small>"));
-        stateViewActive.setText(Html.fromHtml("<b><big>"+states[1]+"</big></b>"+"<br><small><small>active</small></small>"));
-        stateViewSolved.setText(Html.fromHtml("<b><big>"+states[2]+"</big></b>"+"<br><small><small>solved</small></small>"));
-        View.OnClickListener stateViewTouchListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ClueViewActivity.class);
-                startActivity(intent);
-            }
-        };
-        stateViewInactive.setOnClickListener(stateViewTouchListener);
-        stateViewActive.setOnClickListener(stateViewTouchListener);
-        stateViewSolved.setOnClickListener(stateViewTouchListener);
+        setClueDisplays(scavengerHuntDatabase);
+        animateProgressBar(scavengerHuntDatabase);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,9 +98,18 @@ public class MainActivity extends MenuActivity {
         setCheckedId(R.id.nav_progress);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    public void setClueDisplays(ScavengerHuntDatabase scavengerHuntDatabase) {
+        int[] states = scavengerHuntDatabase.getTotalClueStates();
+        TextView stateViewInactive = findViewById(R.id.clueStatus_inactive);
+        TextView stateViewActive = findViewById(R.id.clueStatus_active);
+        TextView stateViewSolved = findViewById(R.id.clueStatus_solved);
+        stateViewInactive.setText(Html.fromHtml("<b><big>"+states[0]+"</big></b>"+"<br><small><small>inactive</small></small>"));
+        stateViewActive.setText(Html.fromHtml("<b><big>"+states[1]+"</big></b>"+"<br><small><small>active</small></small>"));
+        stateViewSolved.setText(Html.fromHtml("<b><big>"+states[2]+"</big></b>"+"<br><small><small>solved</small></small>"));
+
+    }
+
+    public void animateProgressBar(ScavengerHuntDatabase scavengerHuntDatabase) {
         float progress = scavengerHuntDatabase.getTotalProgressPercent();
 
         //animate progress bar to current position
@@ -143,6 +137,7 @@ public class MainActivity extends MenuActivity {
         animation2.start();
         textView.invalidate();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -191,12 +186,11 @@ public class MainActivity extends MenuActivity {
             QrEntry entry = (QrEntry) data.getSerializableExtra(QrScanner.QR_CODE_KEY);
             ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
 
-            Log.e("FIREBASE","downloading scavenger hunt");
-
             if(entry.getType().equals(QrEntry.Type.SCAVENGER_HUNT)) {
                 scavengerHuntDatabase.downloadScavengerHunt(entry.getUuid(), this);
             } else if(entry.getType().equals(QrEntry.Type.CLUE)) {
                 scavengerHuntDatabase.solveClue(entry.getUuid());
+                reloadActivity();
             }
 
         }

@@ -155,7 +155,9 @@ public class ScavengerHuntDatabase implements Serializable {
                                     localScavengerHunts.add(newScavengerHunt);
                                     FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
                                     Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);
-                                    callingActivity.reloadActivity();
+
+                                    callingActivity.setClueDisplays(ScavengerHuntDatabase.this);
+                                    callingActivity.animateProgressBar(ScavengerHuntDatabase.this);
                                 }
 
                             } catch (Exception e) {
@@ -185,7 +187,9 @@ public class ScavengerHuntDatabase implements Serializable {
 
                     FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
                     Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);
-                    callingActivity.reloadActivity();
+
+                    callingActivity.setClueDisplays(ScavengerHuntDatabase.this);
+                    callingActivity.animateProgressBar(ScavengerHuntDatabase.this);
                 }
             }
         });
@@ -200,7 +204,9 @@ public class ScavengerHuntDatabase implements Serializable {
 
                 FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
                 Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);
-                callingActivity.reloadActivity();
+
+                callingActivity.setClueDisplays(ScavengerHuntDatabase.this);
+                callingActivity.animateProgressBar(ScavengerHuntDatabase.this);
             }
         });
         builder.create().show();
