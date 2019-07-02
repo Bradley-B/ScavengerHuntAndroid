@@ -133,11 +133,11 @@ public class ScavengerHuntDatabase implements Serializable {
     /**
      * Asynchronously downloads a scavenger hunt, adds it to this database, then saves this database to a file.
      * @param uuid the UUID of the scavenger hunt to download
-     * @param context the current app context, usually an activity or service
+     * @param callingActivity the activity that called this method
      */
-    public synchronized void downloadScavengerHunt(final UUID uuid, final Context context) {
-        remoteDb.collection("scavengerHunts").document(uuid.toString()).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    public synchronized void downloadScavengerHunt(final UUID uuid, final MainActivity callingActivity) {
+        Task<DocumentSnapshot> downloadTask = remoteDb.collection("scavengerHunts").document(uuid.toString()).get();
+        downloadTask.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()) {
@@ -146,33 +146,34 @@ public class ScavengerHuntDatabase implements Serializable {
                             Map<String, Object> dbEntry = document.getData();
 
                             try {
-                                final ScavengerHunt newScavengerHunt = ScavengerHunt.deserialize((String) dbEntry.get(DB_KEY_DATA), context);
+                                final ScavengerHunt newScavengerHunt = ScavengerHunt.deserialize((String) dbEntry.get(DB_KEY_DATA), callingActivity);
 
                                 //make sure there are no conflicts
                                 if(getScavengerHunts().contains(newScavengerHunt)) {
-                                    handleConflict(context, newScavengerHunt);
+                                    handleConflict(callingActivity, newScavengerHunt);
                                 } else {
                                     localScavengerHunts.add(newScavengerHunt);
-                                    FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, context);
-                                    Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", context);
+                                    FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
+                                    Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);
+                                    callingActivity.reloadActivity();
                                 }
 
                             } catch (Exception e) {
-                                Notifications.displayAlertDialog("Error", "Error decrypting scavenger hunt. Please confirm it was uploaded correctly.", context);
+                                Notifications.displayAlertDialog("Error", "Error decrypting scavenger hunt. Please confirm it was uploaded correctly.", callingActivity);
                             }
 
                         } else {
                             Log.w(TAG, "error getting document", task.getException());
-                            Notifications.displayAlertDialog("Error", "Error downloading scavenger hunt. Check your internet connection, then try again.", context);
+                            Notifications.displayAlertDialog("Error", "Error downloading scavenger hunt. Check your internet connection, then try again.", callingActivity);
                         }
                     }
                 });
     }
 
-    private synchronized void handleConflict(final Context context, final ScavengerHunt newScavengerHunt) {
+    private synchronized void handleConflict(final MainActivity callingActivity, final ScavengerHunt newScavengerHunt) {
         //conflict. Ask to override or merge
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(callingActivity);
         builder.setTitle("Action Required");
         builder.setMessage("This scavenger hunt is already downloaded. Would you like to preserve your current progress, or overwrite it?");
         builder.setPositiveButton("Preserve Progress", new DialogInterface.OnClickListener() {
@@ -182,8 +183,9 @@ public class ScavengerHuntDatabase implements Serializable {
                     oldScavengerHunt.mergeWith(newScavengerHunt);
                     localScavengerHunts.add(oldScavengerHunt);
 
-                    FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, context);
-                    Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", context);
+                    FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
+                    Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);
+                    callingActivity.reloadActivity();
                 }
             }
         });
@@ -196,8 +198,9 @@ public class ScavengerHuntDatabase implements Serializable {
                 localScavengerHunts.remove(newScavengerHunt);
                 localScavengerHunts.add(newScavengerHunt);
 
-                FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, context);
-                Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", context);
+                FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
+                Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);
+                callingActivity.reloadActivity();
             }
         });
         builder.create().show();

@@ -186,8 +186,6 @@ public class MainActivity extends MenuActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_progress);
 
-        Log.e("FIREBASE","activity result processed, resultcode: " + resultCode);
-
         if(resultCode == MainActivity.QR_RESULT_CODE) {
 
             QrEntry entry = (QrEntry) data.getSerializableExtra(QrScanner.QR_CODE_KEY);
