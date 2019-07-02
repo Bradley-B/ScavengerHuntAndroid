@@ -94,6 +94,10 @@ public class MainActivity extends MenuActivity {
             }
         });
 
+        if(getIntent().hasExtra(QrScanner.QR_CODE_KEY)) {
+            handleQrEntryResult(getIntent());
+        }
+
         super.onCreate(savedInstanceState);
         setCheckedId(R.id.nav_progress);
     }
@@ -181,23 +185,26 @@ public class MainActivity extends MenuActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_progress);
 
-        if(resultCode == MainActivity.QR_RESULT_CODE) {
-
-            QrEntry entry = (QrEntry) data.getSerializableExtra(QrScanner.QR_CODE_KEY);
-            ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
-
-            if(entry.getType().equals(QrEntry.Type.SCAVENGER_HUNT)) {
-                scavengerHuntDatabase.downloadScavengerHunt(entry.getUuid(), this);
-            } else if(entry.getType().equals(QrEntry.Type.CLUE)) {
-                scavengerHuntDatabase.solveClue(entry.getUuid());
-                reloadActivity();
-            }
-
+        if(resultCode == RESULT_OK && requestCode == QrScanner.QR_REQUEST_CODE) {
+            handleQrEntryResult(data);
         }
 
     }
 
-    public void reloadActivity() {
+    private void handleQrEntryResult(Intent data) {
+        QrEntry entry = (QrEntry) data.getSerializableExtra(QrScanner.QR_CODE_KEY);
+        ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+
+        if(entry.getType().equals(QrEntry.Type.SCAVENGER_HUNT)) {
+            Log.v("FIREBASE","downloading scavenger hunt: " + entry.getUuid());
+            scavengerHuntDatabase.downloadScavengerHunt(entry.getUuid(), this);
+        } else if(entry.getType().equals(QrEntry.Type.CLUE)) {
+            scavengerHuntDatabase.solveClue(entry.getUuid());
+            reloadActivity();
+        }
+    }
+
+    private void reloadActivity() {
         finish();
         overridePendingTransition(0, 0);
         startActivity(getIntent());

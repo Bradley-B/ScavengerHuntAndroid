@@ -63,5 +63,13 @@ public class ClueViewActivity extends MenuActivity {
         setCheckedId(R.id.nav_clues);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK && requestCode == QrScanner.QR_REQUEST_CODE) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(QrScanner.QR_CODE_KEY, data.getSerializableExtra(QrScanner.QR_CODE_KEY));
+            useIntent(intent);
+        }
+    }
 
 }

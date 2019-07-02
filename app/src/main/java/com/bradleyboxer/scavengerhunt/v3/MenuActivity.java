@@ -18,8 +18,6 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
     private int checkedId;
     private NavigationView navigationView;
 
-    public static final int QR_RESULT_CODE = 2;
-
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -63,7 +61,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
             Intent intent = new Intent(this, QrScanner.class);
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivityForResult(intent, QR_RESULT_CODE);
+            startActivityForResult(intent, QrScanner.QR_REQUEST_CODE); //note that this may return to any MainActivity or ClueViewActivity
             overridePendingTransition(0, 0);
 
         } else if (id == R.id.nav_answer_compass_clue) {
@@ -86,7 +84,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         return true;
     }
 
-    private void useIntent(Intent intent) {
+    void useIntent(Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);

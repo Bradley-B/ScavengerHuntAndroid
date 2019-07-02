@@ -183,7 +183,6 @@ public class ScavengerHuntDatabase implements Serializable {
                 ScavengerHunt oldScavengerHunt = getScavengerHunt(newScavengerHunt.getUuid());
                 if(oldScavengerHunt != null) {
                     oldScavengerHunt.mergeWith(newScavengerHunt);
-                    localScavengerHunts.add(oldScavengerHunt);
 
                     FileUtil.saveScavengerHuntDatabase(ScavengerHuntDatabase.this, callingActivity);
                     Notifications.displayAlertDialog("Success", "Scavenger hunt downloaded successfully!", callingActivity);

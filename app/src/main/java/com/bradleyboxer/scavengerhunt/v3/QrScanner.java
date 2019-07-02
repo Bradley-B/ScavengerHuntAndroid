@@ -15,6 +15,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
 
     private ZXingScannerView mScannerView;
     public static final String QR_CODE_KEY = "qr";
+    public static final int QR_REQUEST_CODE = 2;
 
     @Override
     public void onCreate(Bundle state) {
@@ -53,7 +54,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
 
             Intent intent = new Intent();
             intent.putExtra(QR_CODE_KEY, entry);
-            setResult(MainActivity.QR_RESULT_CODE, intent);
+            setResult(RESULT_OK, intent);
             finish();
         } catch (JsonSyntaxException e) {
             Notifications.displayAlertDialog("Error", "This qr code does not belong to ScavengerHunt. " +
