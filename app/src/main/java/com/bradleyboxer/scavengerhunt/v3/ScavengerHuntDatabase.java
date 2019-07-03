@@ -87,7 +87,17 @@ public class ScavengerHuntDatabase implements Serializable {
             setActiveScavengerHunt(context, localScavengerHunts.get(0).getUuid());
             return localScavengerHunts.get(0);
         }
-        return getScavengerHunt(UUID.fromString(activeScavengerHuntIdString));
+        Log.v(ScavengerHuntDatabase.TAG, "get active returning: " + getScavengerHunt(UUID.fromString(activeScavengerHuntIdString)));
+
+        ScavengerHunt toReturn = getScavengerHunt(UUID.fromString(activeScavengerHuntIdString));
+        if(toReturn == null) { //stored active scavenger hunt does not exist in the database
+            if(localScavengerHunts.isEmpty()) {
+                return null;
+            }
+            setActiveScavengerHunt(context, localScavengerHunts.get(0).getUuid());
+            return localScavengerHunts.get(0);
+        }
+        return toReturn;
     }
 
     @Nullable

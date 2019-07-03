@@ -10,7 +10,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import com.bradleyboxer.scavengerhunt.R;
 
@@ -18,7 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ClueViewActivity extends MenuActivity {
+public class ClueViewActivity extends MenuActivity implements AdapterView.OnItemSelectedListener {
+
+    ScavengerHuntDatabase scavengerHuntDatabase;
+    LinearLayout frame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,31 +42,43 @@ public class ClueViewActivity extends MenuActivity {
         Intent triggeringIntent = getIntent();
         String triggeringClueName = triggeringIntent.getStringExtra("clueName"); //TODO replace String with UUID
 
-        LinearLayout frame = findViewById(R.id.clue_view_layout);
+        frame = findViewById(R.id.clue_view_layout);
+        scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+        ScavengerHunt activeScavengerHunt = scavengerHuntDatabase.getActiveScavengerHunt(this);
 
-        ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
-        ScavengerHunt scavengerHunt = scavengerHuntDatabase.getActiveScavengerHunt(this);
+        if(activeScavengerHunt!=null) {
+            populateClueList(activeScavengerHunt, triggeringClueName);
 
-        if(scavengerHunt!=null) {
-            boolean displayInactiveClues = scavengerHunt.areInactiveCluesDisplayed();
+            List<ScavengerHunt> scavengerHunts = scavengerHuntDatabase.getScavengerHunts();
+            Spinner spinner = (Spinner) findViewById(R.id.scavengerhunt_spinner_clueview);
+            ArrayAdapter<ScavengerHunt> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, scavengerHunts);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            spinner.setSelection(adapter.getPosition(activeScavengerHunt));
 
-            List<Clue> reversedList = new ArrayList<>(scavengerHunt.getClueList());
-            Collections.reverse(reversedList);
-
-            for(Clue clue : reversedList) {
-                if(displayInactiveClues || clue.isActive() || clue.isSolved()) {
-                    ClueIndividualView clueView = new ClueIndividualView(getApplicationContext(), clue, this);
-                    frame.addView(clueView);
-
-                    if(clue.getName().equals(triggeringClueName)) {
-                        Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), this);
-                    }
-                }
-            }
         }
 
         super.onCreate(savedInstanceState);
         setCheckedId(R.id.nav_clues);
+    }
+
+    private void populateClueList(ScavengerHunt scavengerHunt, String triggeringClueName) {
+        boolean displayInactiveClues = scavengerHunt.areInactiveCluesDisplayed();
+        List<Clue> reversedList = new ArrayList<>(scavengerHunt.getClueList());
+        Collections.reverse(reversedList);
+        frame.removeAllViews();
+
+        for(Clue clue : reversedList) {
+            if(displayInactiveClues || clue.isActive() || clue.isSolved()) {
+                ClueIndividualView clueView = new ClueIndividualView(getApplicationContext(), clue, this);
+                frame.addView(clueView);
+
+                if(clue.getName().equals(triggeringClueName)) {
+                    Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), this);
+                }
+            }
+        }
     }
 
     @Override
@@ -70,6 +88,18 @@ public class ClueViewActivity extends MenuActivity {
             intent.putExtra(QrScanner.QR_CODE_KEY, data.getSerializableExtra(QrScanner.QR_CODE_KEY));
             useIntent(intent);
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        ScavengerHunt scavengerHunt = (ScavengerHunt) parent.getItemAtPosition(pos);
+        populateClueList(scavengerHunt, null);
+        scavengerHuntDatabase.setActiveScavengerHunt(this, scavengerHunt.getUuid());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        frame.removeAllViews();
     }
 
 }

@@ -196,7 +196,7 @@ public class MainActivity extends MenuActivity {
         ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
 
         if(entry.getType().equals(QrEntry.Type.SCAVENGER_HUNT)) {
-            Log.v("FIREBASE","downloading scavenger hunt: " + entry.getUuid());
+            Log.v(ScavengerHuntDatabase.TAG,"downloading scavenger hunt: " + entry.getUuid());
             scavengerHuntDatabase.downloadScavengerHunt(entry.getUuid(), this);
         } else if(entry.getType().equals(QrEntry.Type.CLUE)) {
             scavengerHuntDatabase.solveClue(entry.getUuid());
