@@ -51,7 +51,7 @@ public class GenerateQrActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         ImageView imageView = findViewById(R.id.generated_qr_image);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_menu_qr, getTheme());
+        Drawable drawable = getResources().getDrawable(R.drawable.no_selected_scavenger_hunt, getTheme());
         imageView.setImageDrawable(drawable);
     }
 
@@ -65,18 +65,25 @@ public class GenerateQrActivity extends AppCompatActivity implements AdapterView
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        ImageView imageView = findViewById(R.id.generated_qr_image);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_menu_qr, getTheme());
-        imageView.setImageDrawable(drawable);
-
         scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
         List<ScavengerHunt> scavengerHunts = scavengerHuntDatabase.getScavengerHunts();
 
         Spinner spinner = (Spinner) findViewById(R.id.scavengerhunt_spinner);
-        ArrayAdapter<ScavengerHunt> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, scavengerHunts);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+
+        if(scavengerHunts.isEmpty()) {
+            spinner.setVisibility(View.GONE);
+            ImageView imageView = findViewById(R.id.generated_qr_image);
+            Drawable drawable = getResources().getDrawable(R.drawable.no_saved_scavenger_hunts, getTheme());
+            imageView.setImageDrawable(drawable);
+        } else {
+            spinner.setVisibility(View.VISIBLE);
+            ArrayAdapter<ScavengerHunt> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, scavengerHunts);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+        }
+
+
     }
 
     @Override
