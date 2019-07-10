@@ -3,6 +3,9 @@ package com.bradleyboxer.scavengerhunt.v3;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,9 +18,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +45,17 @@ public class ScavengerHuntDatabase implements Serializable {
     private transient FirebaseFirestore remoteDb;
 
     public ScavengerHuntDatabase() {
-        remoteDb = FirebaseFirestore.getInstance();
+        resetRemoteDb();
         localScavengerHunts = new ArrayList<>();
     }
 
     public void resetRemoteDb() {
         remoteDb = FirebaseFirestore.getInstance();
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .build();
+        remoteDb.setFirestoreSettings(settings);
     }
 
     public synchronized int[] getTotalClueStates() {
@@ -140,12 +152,17 @@ public class ScavengerHuntDatabase implements Serializable {
         localScavengerHunts.add(scavengerHunt);
     }
 
+    public void checkActiveInternetConnection(final Context context) {
+        new NetworkCheckTask(context).execute();
+    }
+
     /**
-     * Asynchronously downloads a scavenger hunt, adds it to this database, then saves this database to a file.
+     * Asynchronously checks for an internet connection, downloads a scavenger hunt, adds it to this database, then saves this database to a file.
      * @param uuid the UUID of the scavenger hunt to download
      * @param callingActivity the activity that called this method
      */
     public synchronized void downloadScavengerHunt(final UUID uuid, final MainActivity callingActivity) {
+        checkActiveInternetConnection(callingActivity);
         Task<DocumentSnapshot> downloadTask = remoteDb.collection("scavengerHunts").document(uuid.toString()).get();
         downloadTask.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -176,7 +193,7 @@ public class ScavengerHuntDatabase implements Serializable {
 
                         } else {
                             Log.w(TAG, "error getting document", task.getException());
-                            Notifications.displayAlertDialog("Error", "Error downloading scavenger hunt. Check your internet connection, then try again.", callingActivity);
+                            Notifications.displayAlertDialog("Error", "Error contacting the network. Check your internet connection, then try again.", callingActivity);
                         }
                     }
                 });
@@ -222,6 +239,7 @@ public class ScavengerHuntDatabase implements Serializable {
     }
 
     public synchronized void uploadScavengerHunt(ScavengerHunt scavengerHunt, final Context context) {
+        checkActiveInternetConnection(context);
         final ScavengerHunt scavengerHuntToUpload = new ScavengerHunt(scavengerHunt);
 
         //to store, mark all clues as inactive except the first
@@ -248,7 +266,7 @@ public class ScavengerHuntDatabase implements Serializable {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w(TAG, "error adding document", e);
-                            Notifications.displayAlertDialog("Error", "Error uploading scavenger hunt. Check your internet connection, then try again.", context);
+                            Notifications.displayAlertDialog("Error", "Error contacting the network. Check your internet connection, then try again.", context);
                         }
                     })
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -259,7 +277,7 @@ public class ScavengerHuntDatabase implements Serializable {
                     });
         } catch (Exception e) {
             Notifications.displayAlertDialog("Error", "Error encrypting scavenger hunt. Please try again.", context);
-            Log.e(TAG, "oops", e);
+            Log.e(TAG, "Error converting scavenger hunt to JSON", e);
         }
     }
 }
