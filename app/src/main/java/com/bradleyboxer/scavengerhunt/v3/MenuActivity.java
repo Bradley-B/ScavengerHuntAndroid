@@ -51,37 +51,49 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
             return false;
         }
 
-        Intent intent = null;
         if (id == R.id.nav_progress) {
-            intent = new Intent(this, MainActivity.class);
+            useIntent(MainActivity.class);
         } else if (id == R.id.nav_clues) {
-            intent = new Intent(this, ClueViewActivity.class);
-        } else if (id == R.id.nav_share) {
+            useIntent(ClueViewActivity.class);
+        } else if (id == R.id.nav_export_qr) {
+            useIntent(GenerateQrActivity.class);
+        } else if(id == R.id.nav_import_qr) {
+            Intent intent = new Intent(this, QrScanner.class);
 
-        } else if (id == R.id.nav_send) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivityForResult(intent, QrScanner.QR_REQUEST_CODE); //note that this may return to any MainActivity or ClueViewActivity
+            overridePendingTransition(0, 0);
 
         } else if (id == R.id.nav_answer_compass_clue) {
-            ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-            Clue earliestUnsolved = scavengerHunt.getEarliestUnsolved(Clue.Type.COMPASS);
+            ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+            ScavengerHunt scavengerHunt = scavengerHuntDatabase.getActiveScavengerHunt(this);
+            Clue earliestUnsolved = null;
+            if(scavengerHunt != null) {
+                earliestUnsolved = scavengerHunt.getEarliestUnsolved(Clue.Type.COMPASS);
+            }
 
-            intent = new Intent(this, CompassActivity.class);
+            Intent intent = new Intent(this, CompassActivity.class);
             intent.putExtra("clue", earliestUnsolved);
+            useIntent(intent);
         } else if (id == R.id.nav_answer_text_clue) {
-            intent = new Intent(this, TextInputActivity.class);
+            useIntent(TextInputActivity.class);
         }
-
-        if(intent==null) {
-            return false;
-        }
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-        overridePendingTransition(0, 0);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    void useIntent(Intent intent) {
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+    }
+
+    private void useIntent(Class<?> activityClass) {
+        Intent intent = new Intent(this, activityClass);
+        useIntent(intent);
     }
 
     @Override

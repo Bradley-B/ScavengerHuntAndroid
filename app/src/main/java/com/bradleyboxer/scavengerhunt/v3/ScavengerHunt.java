@@ -4,22 +4,63 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ScavengerHunt implements Serializable {
 
-    private ArrayList<Clue> clueList;
+    private List<Clue> clueList;
     private boolean inactiveCluesDisplayed;
+    private final UUID uuid;
+    private String name;
 
-    public ScavengerHunt(boolean displayInactiveClues) {
+    private static final Gson gson;
+    static {
+        RuntimeTypeAdapterFactory<Clue> clueAdapterFactory = RuntimeTypeAdapterFactory.of(Clue.class, "clueType")
+                .registerSubtype(GeofenceClue.class, "Geofence")
+                .registerSubtype(CompassClue.class, "Compass")
+                .registerSubtype(TextClue.class, "Text");
+        gson = new GsonBuilder().registerTypeAdapterFactory(clueAdapterFactory).create();
+    }
+
+    public ScavengerHunt(ScavengerHunt scavengerHunt) {
+        this.uuid = scavengerHunt.getUuid();
+        this.clueList = new ArrayList<>();
+        for(Clue c : scavengerHunt.getClueList()) {
+            addClue(c.deepCopy());
+        }
+        this.inactiveCluesDisplayed = scavengerHunt.inactiveCluesDisplayed;
+        this.name = scavengerHunt.getName();
+    }
+
+    public ScavengerHunt(boolean displayInactiveClues, String name) {
         clueList = new ArrayList<>();
         this.inactiveCluesDisplayed = displayInactiveClues;
+        this.uuid = UUID.randomUUID();
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public boolean areInactiveCluesDisplayed() {
@@ -32,19 +73,6 @@ public class ScavengerHunt implements Serializable {
 
     public List<Clue> getClueList() {
         return clueList;
-    }
-
-    public float getProgressPercent() {
-        int numSolved = 0;
-        for(Clue clue : clueList) {
-            if(clue.isSolved()) {
-                numSolved++;
-            }
-        }
-        if(clueList.size()==0) {
-            return 1;
-        }
-        return numSolved/(float)clueList.size();
     }
 
     public Clue getEarliestUnsolved(Clue.Type type) {
@@ -72,45 +100,56 @@ public class ScavengerHunt implements Serializable {
         return new int[] {inactive, active, solved};
     }
 
-    public Clue getClue(String clueName) {
+    @Nullable
+    public Clue getClue(UUID clueUuid) {
         for(Clue c : getClueList()) {
-            if(clueName.equals(c.getName())) {
+            if(clueUuid.equals(c.getUuid())) {
                 return c;
             }
         }
         return null;
     }
 
-    public void solveClue(String clueName) {
-        Clue clue = getClue(clueName);
-        clue.solved();
+    public void solveClue(UUID clueUuid) {
+        Clue clue = getClue(clueUuid);
+        if(clue != null) {
+            clue.solved();
 
-        //activate next clue
-        List<String> clueChildrenNames = clue.getChildren();
-        for(String name : clueChildrenNames) {
-            Clue child = getClue(name);
-            child.activate();
+            //activate next clue(s)
+            List<UUID> childrenIds = clue.getChildren();
+            for(UUID id : childrenIds) {
+                Clue child = getClue(id);
+                if(child != null) {
+                    child.activate();
+                }
+            }
         }
     }
 
-    public static String serialize(ScavengerHunt scavengerHunt) {
-        try {
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            ObjectOutputStream so = new ObjectOutputStream(bo);
-            so.writeObject(scavengerHunt);
-            so.flush();
-            return new String(Base64.encode(bo.toByteArray(), Base64.DEFAULT));
-        } catch (Exception e) {
-            Log.e("GEOFENCE UI", "serialization error", e);
+    /**
+     * Merge a new scavenger hunt with this one, attempting to preserve states of equal clues.
+     * The new scavenger hunt is used as the base, which means it will delete clues if they are removed in the new version.
+     * @param scavengerHunt the scavenger hunt to merge with
+     */
+    public void mergeWith(ScavengerHunt scavengerHunt) {
+        List<Clue> duplicates = new ArrayList<>();
+        for(Clue newClue : scavengerHunt.getClueList()) {
+            Clue oldEquivalent = getClue(newClue.getUuid());
+            if(oldEquivalent!=null) { //clue exists in both scavenger hunts
+                newClue.setState(oldEquivalent.getState());
+                duplicates.add(oldEquivalent);
+            }
         }
-        return null;
+        clueList.removeAll(duplicates);
+        clueList.addAll(scavengerHunt.getClueList());
+    }
+
+    public static String serialize(ScavengerHunt scavengerHunt) throws Exception {
+        return gson.toJson(scavengerHunt);
     }
 
     public static ScavengerHunt deserialize(String serializedObject, Context context) throws Exception {
-        byte b[] = Base64.decode(serializedObject.getBytes(), Base64.DEFAULT);
-        ByteArrayInputStream bi = new ByteArrayInputStream(b);
-        ObjectInputStream si = new ObjectInputStream(bi);
-        ScavengerHunt scavengerHunt = (ScavengerHunt) si.readObject();
+        ScavengerHunt scavengerHunt = gson.fromJson(serializedObject, ScavengerHunt.class);
 
         GeofenceManager geofenceManager = new GeofenceManager(context);
         for(Clue clue : scavengerHunt.getClueList()) {
@@ -120,5 +159,24 @@ public class ScavengerHunt implements Serializable {
             }
         }
         return scavengerHunt;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(other == this) {
+            return true;
+        }
+
+        if(other instanceof ScavengerHunt) {
+            ScavengerHunt otherScavengerHunt = (ScavengerHunt) other;
+            return otherScavengerHunt.getUuid().equals(getUuid());
+        }
+        return false;
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return getName();
     }
 }

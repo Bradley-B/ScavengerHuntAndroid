@@ -8,13 +8,15 @@ import android.util.Log;
 import com.bradleyboxer.scavengerhunt.R;
 import com.google.android.gms.location.Geofence;
 
+import java.util.UUID;
+
 public class GeofenceClue extends Clue {
 
     private final GeoLocation location;
     private transient GeofenceManager geofenceManager;
 
-    public GeofenceClue(String name, String hintText, String solvedText, final GeoLocation location, GeofenceManager geofenceManager) {
-        super(name, hintText, solvedText, Type.GEOFENCE);
+    public GeofenceClue(String name, String hintText, String solvedText, final GeoLocation location, GeofenceManager geofenceManager, UUID uuid) {
+        super(name, hintText, solvedText, Type.GEOFENCE, uuid);
         this.location = location;
         setGeofenceManager(geofenceManager);
     }
@@ -52,7 +54,7 @@ public class GeofenceClue extends Clue {
 
         super.activate();
         Geofence geofence = new Geofence.Builder()
-                .setRequestId(getName())
+                .setRequestId(getUuid().toString())
                 .setCircularRegion(
                         location.getLatitude(),
                         location.getLongitude(),
@@ -70,4 +72,12 @@ public class GeofenceClue extends Clue {
         return context.getResources().getDrawable(R.drawable.map_search, context.getTheme());
     }
 
+    @Override
+    public Clue deepCopy() {
+        GeofenceClue clue = new GeofenceClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), null, getUuid());
+        for(UUID child : getChildren()) {
+            clue.addChild(child);
+        }
+        return clue;
+    }
 }

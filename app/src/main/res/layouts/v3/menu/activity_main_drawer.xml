@@ -20,18 +20,19 @@
             android:id="@+id/nav_answer_compass_clue"
             android:icon="@drawable/ic_menu_compass"
             android:title="Solve Compass Clue" />
+        <item
+            android:id="@+id/nav_import_qr"
+            android:icon="@drawable/ic_menu_qr_scan"
+            android:title="Scan QR Code" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_export_qr"
+                android:icon="@drawable/ic_menu_qr"
+                android:title="Export by QR Code" />
+
         </menu>
     </item>
 

@@ -7,12 +7,14 @@ import android.location.Location;
 
 import com.bradleyboxer.scavengerhunt.R;
 
+import java.util.UUID;
+
 public class CompassClue extends Clue {
 
     private final GeoLocation location;
 
-    public CompassClue(String name, String hintText, String solvedText, GeoLocation location) {
-        super(name, hintText, solvedText, Type.COMPASS);
+    public CompassClue(String name, String hintText, String solvedText, GeoLocation location, UUID uuid) {
+        super(name, hintText, solvedText, Type.COMPASS, uuid);
         this.location = location;
     }
 
@@ -34,6 +36,15 @@ public class CompassClue extends Clue {
 
     public GeoLocation getLocation() {
         return location;
+    }
+
+    @Override
+    public Clue deepCopy() {
+        CompassClue clue = new CompassClue(getName(), getHintText(), getSolvedText(), location.deepCopy(), getUuid());
+        for(UUID child : getChildren()) {
+            clue.addChild(child);
+        }
+        return clue;
     }
 
 }

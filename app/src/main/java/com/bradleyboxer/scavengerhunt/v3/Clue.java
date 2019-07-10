@@ -9,10 +9,12 @@ import com.bradleyboxer.scavengerhunt.R;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class Clue implements Serializable {
 
     abstract Drawable getDrawableIcon(Context context);
+    abstract Clue deepCopy();
 
     private String hintText;
     private String solvedText;
@@ -20,18 +22,28 @@ public abstract class Clue implements Serializable {
     private Type type;
     private State state;
 
-    private final List<String> activationList;
+    private final List<UUID> activationList;
+    private final UUID uuid;
 
     public enum Type {GEOFENCE, COMPASS, TEXT} //TODO remove type attribute and move functionality into subclasses
     public enum State {INACTIVE, ACTIVE, SOLVED}
 
-    public Clue(String name, String hintText, String solvedText, Type type) {
+    public Clue(String name, String hintText, String solvedText, Type type, UUID uuid) {
         this.hintText = hintText;
         this.solvedText = solvedText;
         this.type = type;
         this.name = name;
         this.activationList = new ArrayList<>();
-        state = State.INACTIVE;
+        this.uuid = uuid;
+        resetState();
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public State getState() {
+        return state;
     }
 
     public int getStatusColor() {
@@ -44,11 +56,15 @@ public abstract class Clue implements Serializable {
         }
     }
 
-    public void addChild(String childName) {
-        activationList.add(childName);
+    public void addChild(Clue child) {
+        activationList.add(child.getUuid());
     }
 
-    public List<String> getChildren() {
+    public void addChild(UUID childId) {
+        activationList.add(childId);
+    }
+
+    public List<UUID> getChildren() {
         return activationList;
     }
 
@@ -92,8 +108,18 @@ public abstract class Clue implements Serializable {
         if(!(o instanceof Clue)) return false;
 
         Clue other = (Clue) o;
-        return getType().equals(other.getType()) && getName().equals(other.getName()) &&
-                getHintText().equals(other.getHintText()) && getSolvedText().equals(other.getSolvedText());
+        return other.getUuid().equals(getUuid());
+
+//        return getType().equals(other.getType()) && getName().equals(other.getName()) &&
+//                getHintText().equals(other.getHintText()) && getSolvedText().equals(other.getSolvedText());
+    }
+
+    public void resetState() {
+        setState(State.INACTIVE);
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
 }

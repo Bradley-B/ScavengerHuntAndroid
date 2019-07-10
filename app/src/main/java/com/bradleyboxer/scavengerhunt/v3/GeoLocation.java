@@ -25,4 +25,8 @@ public class GeoLocation implements Serializable {
     public int getRadius() {
         return radius;
     }
+
+    public GeoLocation deepCopy() {
+        return new GeoLocation(latitude, longitude, radius);
+    }
 }

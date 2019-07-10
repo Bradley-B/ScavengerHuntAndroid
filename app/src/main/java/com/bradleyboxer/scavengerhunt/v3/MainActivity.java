@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import com.google.android.material.navigation.NavigationView;
 import android.view.Menu;
@@ -26,40 +27,28 @@ import java.util.List;
 
 public class MainActivity extends MenuActivity {
 
-    public static final int LOCATION_REQUEST_ID = 1;
-    private ScavengerHunt scavengerHunt;
+    public static final int LOCATION_AND_CAMERA_REQUEST_ID = 1;
+    private ScavengerHuntDatabase scavengerHuntDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_ID);
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA},
+                    LOCATION_AND_CAMERA_REQUEST_ID);
         }
 
-        scavengerHunt = FileUtil.loadScavengerHunt(this);
-        if(scavengerHunt==null) {
-            scavengerHunt = Assembly.assembleMorganScavengerHunt(this);
-            FileUtil.saveScavengerHunt(scavengerHunt, this);
+        scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+        if(scavengerHuntDatabase==null) {
+            scavengerHuntDatabase = new ScavengerHuntDatabase();
+            FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
         }
 
-        int[] states = scavengerHunt.getClueStates();
-        TextView stateViewInactive = findViewById(R.id.clueStatus_inactive);
-        TextView stateViewActive = findViewById(R.id.clueStatus_active);
-        TextView stateViewSolved = findViewById(R.id.clueStatus_solved);
-        stateViewInactive.setText(Html.fromHtml("<b><big>"+states[0]+"</big></b>"+"<br><small><small>inactive</small></small>"));
-        stateViewActive.setText(Html.fromHtml("<b><big>"+states[1]+"</big></b>"+"<br><small><small>active</small></small>"));
-        stateViewSolved.setText(Html.fromHtml("<b><big>"+states[2]+"</big></b>"+"<br><small><small>solved</small></small>"));
-        View.OnClickListener stateViewTouchListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ClueViewActivity.class);
-                startActivity(intent);
-            }
-        };
-        stateViewInactive.setOnClickListener(stateViewTouchListener);
-        stateViewActive.setOnClickListener(stateViewTouchListener);
-        stateViewSolved.setOnClickListener(stateViewTouchListener);
+        setClueDisplays(scavengerHuntDatabase);
+        animateProgressBar(scavengerHuntDatabase);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -105,14 +94,27 @@ public class MainActivity extends MenuActivity {
             }
         });
 
+        if(getIntent().hasExtra(QrScanner.QR_CODE_KEY)) {
+            handleQrEntryResult(getIntent());
+        }
+
         super.onCreate(savedInstanceState);
         setCheckedId(R.id.nav_progress);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        float progress = scavengerHunt.getProgressPercent();
+    public void setClueDisplays(ScavengerHuntDatabase scavengerHuntDatabase) {
+        int[] states = scavengerHuntDatabase.getTotalClueStates();
+        TextView stateViewInactive = findViewById(R.id.clueStatus_inactive);
+        TextView stateViewActive = findViewById(R.id.clueStatus_active);
+        TextView stateViewSolved = findViewById(R.id.clueStatus_solved);
+        stateViewInactive.setText(Html.fromHtml("<b><big>"+states[0]+"</big></b>"+"<br><small><small>inactive</small></small>"));
+        stateViewActive.setText(Html.fromHtml("<b><big>"+states[1]+"</big></b>"+"<br><small><small>active</small></small>"));
+        stateViewSolved.setText(Html.fromHtml("<b><big>"+states[2]+"</big></b>"+"<br><small><small>solved</small></small>"));
+
+    }
+
+    public void animateProgressBar(ScavengerHuntDatabase scavengerHuntDatabase) {
+        float progress = scavengerHuntDatabase.getTotalProgressPercent();
 
         //animate progress bar to current position
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -140,6 +142,7 @@ public class MainActivity extends MenuActivity {
         textView.invalidate();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -158,7 +161,8 @@ public class MainActivity extends MenuActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if(id == R.id.action_load_test) {
-            FileUtil.saveScavengerHunt(Assembly.assembleMorganScavengerHunt(this), this);
+            scavengerHuntDatabase = new ScavengerHuntDatabase();
+            FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
             reloadActivity();
             return true;
         }
@@ -168,7 +172,7 @@ public class MainActivity extends MenuActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(requestCode == LOCATION_REQUEST_ID) {
+        if(requestCode == LOCATION_AND_CAMERA_REQUEST_ID) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                  throw new RuntimeException();
             }
@@ -180,9 +184,27 @@ public class MainActivity extends MenuActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_progress);
+
+        if(resultCode == RESULT_OK && requestCode == QrScanner.QR_REQUEST_CODE) {
+            handleQrEntryResult(data);
+        }
+
     }
 
-    public void reloadActivity() {
+    private void handleQrEntryResult(Intent data) {
+        QrEntry entry = (QrEntry) data.getSerializableExtra(QrScanner.QR_CODE_KEY);
+        ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+
+        if(entry.getType().equals(QrEntry.Type.SCAVENGER_HUNT)) {
+            Log.v(ScavengerHuntDatabase.TAG,"downloading scavenger hunt: " + entry.getUuid());
+            scavengerHuntDatabase.downloadScavengerHunt(entry.getUuid(), this);
+        } else if(entry.getType().equals(QrEntry.Type.CLUE)) {
+            scavengerHuntDatabase.solveClue(entry.getUuid());
+            reloadActivity();
+        }
+    }
+
+    private void reloadActivity() {
         finish();
         overridePendingTransition(0, 0);
         startActivity(getIntent());
@@ -191,19 +213,26 @@ public class MainActivity extends MenuActivity {
 
     public boolean forceSolveGeofenceClues(Location location) {
         boolean atLeastOneSolved = false;
-        List<Clue> clueList = scavengerHunt.getClueList();
-        for(Clue clue : clueList) {
-            if(clue.getType().equals(Clue.Type.GEOFENCE)) {
-                GeofenceClue geofenceClue = (GeofenceClue) clue;
-                boolean shouldBeSolved = geofenceClue.shouldBeSolved(location);
-                if(shouldBeSolved) {
-                    scavengerHunt.solveClue(clue.getName());
-                    FileUtil.saveScavengerHunt(scavengerHunt, this);
-                    Notifications.sendNotification(clue.getName(), this);
-                    atLeastOneSolved = true;
+
+        for(ScavengerHunt scavengerHunt : scavengerHuntDatabase.getScavengerHunts()) {
+            List<Clue> clueList = scavengerHunt.getClueList();
+            for(Clue clue : clueList) {
+                if(clue.getType().equals(Clue.Type.GEOFENCE)) {
+                    GeofenceClue geofenceClue = (GeofenceClue) clue;
+                    boolean shouldBeSolved = geofenceClue.shouldBeSolved(location);
+                    if(shouldBeSolved) {
+                        scavengerHunt.solveClue(clue.getUuid());
+                        Notifications.sendNotification(clue.getName(), this);
+                        atLeastOneSolved = true;
+                    }
                 }
             }
         }
+
+        if(atLeastOneSolved) {
+            FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
+        }
+
         return atLeastOneSolved;
     }
 }

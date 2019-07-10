@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import androidx.core.content.ContextCompat;
+
+import android.content.Intent;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,6 +25,8 @@ public class ClueIndividualView extends LinearLayout {
     private Button clueSolveButton;
     private TextView clueName;
 
+    private MenuActivity callingActivity;
+
     private int iconTouches = 0;
 
     @Deprecated
@@ -29,11 +34,12 @@ public class ClueIndividualView extends LinearLayout {
         super(context, null, 0);
     }
 
-    public ClueIndividualView(Context context, final Clue clue) {
+    public ClueIndividualView(Context context, final Clue clue, final MenuActivity callingActivity) {
         super(context, null, 0);
         this.clue = clue;
         inflate(getContext(), R.layout.content_clue_individual_view, this);
 
+        this.callingActivity = callingActivity;
         clueIcon = (ImageView) findViewById(R.id.clue_view_icon);
         clueHintButton = (Button) findViewById(R.id.clue_hint_button);
         clueSolveButton = (Button) findViewById(R.id.clue_solve_button);
@@ -46,10 +52,18 @@ public class ClueIndividualView extends LinearLayout {
             @Override
             public void onClick(View view) {
                 if(iconTouches>50) {
-                    ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(getContext());
-                    scavengerHunt.solveClue(clue.getName());
-                    FileUtil.saveScavengerHunt(scavengerHunt, getContext());
+
+                    //solve clue and update databases
+                    ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(getContext());
+                    scavengerHuntDatabase.solveClue(clue);
+                    FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, getContext());
                     Notifications.sendNotification(clue.getName(), getContext());
+
+                    //reload activity
+                    callingActivity.finish();
+                    Intent refreshIntent = callingActivity.getIntent();
+                    refreshIntent.putExtra("clueName", clue.getName()); //TODO replace with UUID
+                    callingActivity.startActivity(refreshIntent);
                 }
                 iconTouches++;
             }
@@ -71,30 +85,18 @@ public class ClueIndividualView extends LinearLayout {
                 if(clue.isSolved()) {
                     viewSolution();
                 } else {
-                    clue.launchSolveActivity(getContext());
+                    clue.launchSolveActivity(callingActivity);
                 }
             }
         });
     }
 
     public void viewHint() {
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
-        dlgAlert.setMessage(clue.getHintText());
-        dlgAlert.setTitle("Hint Message");
-        dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialogInterface, int i) {}
-        });
-        dlgAlert.create().show();
+        Notifications.displayAlertDialog("Hint Message", clue.getHintText(), callingActivity);
     }
 
     public void viewSolution() {
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
-        dlgAlert.setMessage(clue.getSolvedText());
-        dlgAlert.setTitle("Solution Message");
-        dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialogInterface, int i) {}
-        });
-        dlgAlert.create().show();
+        Notifications.displayAlertDialog("Solution Message", clue.getSolvedText(), callingActivity);
     }
 
 }

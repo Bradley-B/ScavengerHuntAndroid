@@ -21,16 +21,20 @@ public class TextInputActivity extends MenuActivity {
         EditText textInput = findViewById(R.id.editText3);
         String text = textInput.getText().toString();
 
-        ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-        for(Clue clue : scavengerHunt.getClueList()) {
-            if(clue.getType().equals(Clue.Type.TEXT)) {
-                TextClue textClue = (TextClue) clue;
-                if(textClue.shouldBeSolved(text)) {
-                    scavengerHunt.solveClue(clue.getName());
-                    Notifications.sendNotification(clue.getName(), this);
+        ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+
+        for(ScavengerHunt scavengerHunt : scavengerHuntDatabase.getScavengerHunts()) {
+            for(Clue clue : scavengerHunt.getClueList()) {
+                if(clue.getType().equals(Clue.Type.TEXT)) {
+                    TextClue textClue = (TextClue) clue;
+                    if(textClue.shouldBeSolved(text)) {
+                        scavengerHunt.solveClue(clue.getUuid());
+                        Notifications.sendNotification(clue.getName(), this);
+                    }
                 }
             }
         }
-        FileUtil.saveScavengerHunt(scavengerHunt, this);
+
+        FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
     }
 }

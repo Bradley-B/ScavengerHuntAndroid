@@ -8,6 +8,7 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 public class GeofenceTransitionsIntentService extends IntentService {
 
@@ -43,17 +44,21 @@ public class GeofenceTransitionsIntentService extends IntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             for(Geofence triggeringGeofence : triggeringGeofences) {
-                // Get the transition details. Request id is the name of the geofence
-                String geofenceName = triggeringGeofence.getRequestId();
+                // Get the transition details. Request id is the uuid of the geofence
+                UUID geofenceId = UUID.fromString(triggeringGeofence.getRequestId());
 
                 //mark the geofence as solved
-                ScavengerHunt scavengerHunt = FileUtil.loadScavengerHunt(this);
-                scavengerHunt.solveClue(geofenceName);
-                FileUtil.saveScavengerHunt(scavengerHunt, this);
+                ScavengerHuntDatabase scavengerHuntDatabase = FileUtil.loadScavengerHuntDatabase(this);
+                Clue clue = scavengerHuntDatabase.getClue(geofenceId);
+                if(clue != null) {
+                    scavengerHuntDatabase.solveClue(clue);
+                    FileUtil.saveScavengerHuntDatabase(scavengerHuntDatabase, this);
 
-                // Send notification and log the transition details.
-                Notifications.sendNotification(geofenceName, this);
-                Log.i("GEOFENCE STATUS", "Entering geofence: "+geofenceName);
+                    // Send notification and log the transition details.
+                    Notifications.sendNotification(clue.getName(), this);
+                    Log.i("GEOFENCE STATUS", "Entering geofence: "+clue.getName());
+                }
+
             }
 
         } else {

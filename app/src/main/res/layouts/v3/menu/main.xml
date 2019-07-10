@@ -9,6 +9,6 @@
     <item
         android:id="@+id/action_load_test"
         android:orderInCategory="100"
-        android:title="Reset Preload 5/30"
+        android:title="Reset Database"
         app:showAsAction="never" />
 </menu>

@@ -1,10 +1,12 @@
 package com.bradleyboxer.scavengerhunt.v3;
 
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -19,6 +21,16 @@ import java.util.Date;
 public class Notifications {
 
     private static long lastNotificationTimestamp = 0;
+
+    public static void displayAlertDialog(String title, String message, Context context) {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);
+        dlgAlert.setMessage(message);
+        dlgAlert.setTitle(title);
+        dlgAlert.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+            @Override public void onClick(DialogInterface dialogInterface, int i) {}
+        });
+        dlgAlert.create().show();
+    }
 
     public synchronized static void sendNotification(String clueName, Context context) {
 
