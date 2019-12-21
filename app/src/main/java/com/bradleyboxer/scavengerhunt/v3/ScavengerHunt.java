@@ -34,7 +34,8 @@ public class ScavengerHunt implements Serializable {
         RuntimeTypeAdapterFactory<Clue> clueAdapterFactory = RuntimeTypeAdapterFactory.of(Clue.class, "clueType")
                 .registerSubtype(GeofenceClue.class, "Geofence")
                 .registerSubtype(CompassClue.class, "Compass")
-                .registerSubtype(TextClue.class, "Text");
+                .registerSubtype(TextClue.class, "Text")
+                .registerSubtype(CheckboxClue.class, "Checkbox");
         gson = new GsonBuilder().registerTypeAdapterFactory(clueAdapterFactory).create();
     }
 
@@ -110,7 +111,7 @@ public class ScavengerHunt implements Serializable {
         return null;
     }
 
-    public void solveClue(UUID clueUuid) {
+    public List<UUID> solveClue(UUID clueUuid) {
         Clue clue = getClue(clueUuid);
         if(clue != null) {
             clue.solved();
@@ -123,7 +124,9 @@ public class ScavengerHunt implements Serializable {
                     child.activate();
                 }
             }
+            return childrenIds;
         }
+        return null;
     }
 
     /**

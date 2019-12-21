@@ -25,7 +25,7 @@ public abstract class Clue implements Serializable {
     private final List<UUID> activationList;
     private final UUID uuid;
 
-    public enum Type {GEOFENCE, COMPASS, TEXT} //TODO remove type attribute and move functionality into subclasses
+    public enum Type {GEOFENCE, COMPASS, TEXT, CHECKBOX} //TODO remove type attribute and move functionality into subclasses
     public enum State {INACTIVE, ACTIVE, SOLVED}
 
     public Clue(String name, String hintText, String solvedText, Type type, UUID uuid) {
