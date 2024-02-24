@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ScavengerHunt.iml" filepath="$PROJECT_DIR$/ScavengerHunt.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ScavengerHuntAndroid.iml" filepath="$PROJECT_DIR$/.idea/modules/ScavengerHuntAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScavengerHuntAndroid.app.unitTest.iml" />
     </modules>
   </component>
 </project>
