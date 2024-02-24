@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.bradleyboxer.scavengerhunt">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -17,31 +17,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".v3.GenerateQrActivity"
-            android:label="Export Qr Code">
+        <activity android:name="com.bradleyboxer.scavengerhunt.v3.GenerateQrActivity" android:label="Export Qr Code">
 
         </activity>
-        <activity android:name=".v3.QrScanner">
+        <activity android:name="com.bradleyboxer.scavengerhunt.v3.QrScanner">
 
         </activity>
         <activity
-            android:name=".v3.TextInputActivity"
+            android:name="com.bradleyboxer.scavengerhunt.v3.TextInputActivity"
             android:label="Text Input"
             android:theme="@style/AppTheme">
 
         </activity>
         <activity
-            android:name=".v3.CompassActivity"
+            android:name="com.bradleyboxer.scavengerhunt.v3.CompassActivity"
             android:label="@string/title_activity_solve_compass_clue"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".v3.ClueViewActivity"
+            android:name="com.bradleyboxer.scavengerhunt.v3.ClueViewActivity"
             android:label="@string/title_activity_clue_view"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".v3.MainActivity"
+            android:name="com.bradleyboxer.scavengerhunt.v3.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".v3.GeofenceTransitionsIntentService" />
+        <service android:name="com.bradleyboxer.scavengerhunt.v3.GeofenceTransitionsIntentService" />
     </application>
 
 </manifest>
